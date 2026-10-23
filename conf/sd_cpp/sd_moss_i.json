@@ -1,0 +1,12 @@
+{
+  "name": "sd_moss_i",
+  "kind": "mode",
+  "description": "SD - MOSS Image - Gen",
+  "include": "sd_moss_i_common.json",
+  "args": {
+    "--cfg-scale": 1.0,
+    "--output": "/tmp/moss_i_out.png",
+    "--prompt": "a lovely cat holding a sign says 'moss-image.cpp' {_}"
+  }
+}
+

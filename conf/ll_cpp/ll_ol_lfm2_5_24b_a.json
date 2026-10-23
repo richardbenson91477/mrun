@@ -1,0 +1,11 @@
+{
+  "name": "ll_ol_lfm2_5_24b_a",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - LFM 2.5 24B A",
+  "include": "ll_ol_qwen_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_llm/model_lfm2_5_24b_a"
+  }
+}
+

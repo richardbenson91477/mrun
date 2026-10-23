@@ -1,0 +1,21 @@
+{
+  "name": "sd_moss_i_common",
+  "kind": "base",
+  "description": "SD - MOSS Image (Common)",
+  "include": "sd_common.json",
+  "vars": {
+    "_": "<lora:lora_4s:1.0>"
+  },
+  "args": {
+    "--vae": "{_model_path}/moss_i_models/flux2-klein-vae.safetensors",
+    "--llm": "{_model_path}/moss_i_models/Qwen3.5-9B-heretic-MTP-Q8_0.gguf",
+    "--diffusion-model": "{_model_path}/moss_i_models/MOSS-Image-SFT-Q8_0.gguf",
+    "--tokenizer": "{_model_path}/moss_i_models/tokenizer.json",
+    "--lora-model-dir": "{_model_path}/moss_i_lora",
+    "--steps": 4,
+    "--width": 512,
+    "--height": 512,
+    "--negative-prompt": " "
+  }
+}
+

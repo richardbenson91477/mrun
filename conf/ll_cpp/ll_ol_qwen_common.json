@@ -1,0 +1,14 @@
+{
+  "name": "ll_ol_qwen_common",
+  "kind": "base",
+  "description": "Llama.cpp - Overlay - Qwen (Common)",
+  "include": "ll_common.json",
+  "args": {
+    "--temp": 0.6,
+    "--top-k": 20,
+    "--top-p": 0.95,
+    "--spec-draft-n-min": 1,
+    "--spec-draft-n-max": 3
+  }
+}
+

@@ -1,0 +1,11 @@
+{
+  "name": "ll_ol_qwen3_6_35b_dflash",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - Qwen 3.6 35B (dflash)",
+  "args": {
+    "--spec-type": "draft-dflash",
+    "--spec-draft-model": "{_model_path}/gguf_llm/dflash_qwen3_6_35b"
+  }
+}
+

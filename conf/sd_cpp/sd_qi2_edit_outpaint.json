@@ -1,0 +1,12 @@
+{
+  "name": "sd_qi2_edit_outpaint",
+  "kind": "mode",
+  "description": "SD - Qwen Image 2 - Edit (outpaint)",
+  "include": "sd_qi2_common.json",
+  "args": {
+    "--ref-image": "in.png",
+    "--output": "/tmp/qi2_edit_outpaint_out.png",
+    "--prompt": "Outpaint the image: replace the solid gray areas with a seamless continuation of the scene, keeping the existing picture unchanged. <lora:lora_outpaint:0.8> {_}"
+  }
+}
+

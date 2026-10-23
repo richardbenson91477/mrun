@@ -1,0 +1,23 @@
+{
+  "name": "a_vibevoice_common",
+  "kind": "base",
+  "description": "Audio.cpp - Vibevoice (Common)",
+  "include": "audio_cpp_common.json",
+  "vars": {
+    "_text": "Speaker 1: Do we follow the melody line?\nSpeaker 2: Yes, the rhythm keeps everything fine.\nSpeaker 1: Hold that shape and make it new.\nSpeaker 2: Change the color, keep the view!",
+    "_steps": 8,
+    "_out_path": "/tmp/vibevoice_out.wav"
+  },
+  "args": {
+    "--family": "vibevoice",
+    "--task": "tts",
+    "--text": "{_text}",
+    "--num-inference-steps": "{_steps}",
+    "--out": "{_out_path}"
+  },
+  "optional_args": {
+    "--request-option": "voice_samples=in1.wav,in2.wav",
+    "--guidance_scale": 1.3
+  }
+}
+

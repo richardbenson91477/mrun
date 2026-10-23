@@ -1,0 +1,14 @@
+{
+  "name": "test_hooks_main_fail",
+  "kind": "mode",
+  "executable": "/bin/sh",
+  "env": {
+  },
+  "args": {
+    "-c": "exit 7"
+  },
+  "post_run": [
+    "echo post ran ret=$MRUN_RET ok=$MRUN_OK"
+  ]
+}
+

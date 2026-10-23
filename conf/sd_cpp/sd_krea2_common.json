@@ -1,0 +1,21 @@
+{
+  "name": "sd_krea2_common",
+  "kind": "base",
+  "description": "SD - Krea2 (Common)",
+  "include": "sd_common.json",
+  "vars": {
+    "_": "<lora:lora_refusal_reduction:0.8><lora:lora_unlocked:0.8>"
+  },
+  "args": {
+    "--vae": "{_model_path}/krea2_models/vae_krea2",
+    "--llm": "{_model_path}/krea2_models/llm_krea2",
+    "--llm_vision": "{_model_path}/krea2_models/mmproj_krea2",
+    "--diffusion-model": "{_model_path}/krea2_models/model_krea2",
+    "--lora-model-dir": "{_model_path}/krea2_lora",
+    "--steps": 8,
+    "--width": 512,
+    "--height": 512,
+    "--negative-prompt": " "
+  }
+}
+

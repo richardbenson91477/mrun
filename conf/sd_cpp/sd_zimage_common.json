@@ -1,0 +1,20 @@
+{
+  "name": "sd_zimage_common",
+  "kind": "base",
+  "description": "SD - ZImage (Common)",
+  "include": "sd_common.json",
+  "vars": {
+    "_": "<lora:lora_4s:1.0>"
+  },
+  "args": {
+    "--vae": "{_model_path}/zimage_models/vae_zimage",
+    "--llm": "{_model_path}/zimage_models/llm_zimage",
+    "--diffusion-model": "{_model_path}/zimage_models/model_zimage",
+    "--lora-model-dir": "{_model_path}/zimage_lora",
+    "--steps": 4,
+    "--width": 512,
+    "--height": 512,
+    "--negative-prompt": " "
+  }
+}
+

@@ -1,0 +1,16 @@
+{
+  "name": "sd_qi2_edit",
+  "kind": "mode",
+  "description": "SD - Qwen Image 2 - Edit",
+  "include": "sd_qi2_common.json",
+  "vars": {},
+  "env": {},
+  "args": {
+    "--output": "/tmp/qi2_edit_out.png",
+    "--prompt": "(use pose reference) Beauitful blonde woman. {_}",
+    "@mrun_repeat --ref-image": [
+        "{_model_path}/ex_data/clothes2_openpose.png"
+    ]
+  }
+}
+

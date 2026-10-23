@@ -1,0 +1,6 @@
+{
+  "name": "test_circular_a",
+  "kind": "mode",
+  "include": "test_circular_b.json"
+}
+

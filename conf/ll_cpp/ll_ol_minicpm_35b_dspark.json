@@ -1,0 +1,11 @@
+{
+  "name": "ll_ol_minicpm_35b_dspark",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - MiniCPM-V-4.7 35B (dspark)",
+  "args": {
+    "--spec-type": "draft-dspark",
+    "--spec-draft-model": "{_model_path}/gguf_llm/dspark_minicpm_35b"
+  }
+}
+

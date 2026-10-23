@@ -1,0 +1,738 @@
+.TH MRUN 1 "October 2026" "mrun 3.5" "User Commands"
+.SH NAME
+mrun \- A universal, dynamic meta-runner for CLI tools using declarative JSON configurations with pre/post-execution hooks, named overlays, and anonymous patches.
+.SH SYNOPSIS
+.B mrun.py
+[\fIOPTIONS\fR] \fB\-m\fR \fIMODE\fR
+[\fB\-y\fR]
+[\fB\-T\fR]
+[\fB\-o\fR \fINAME\fR]...
+[\fB\-p\fR \fIPATH\fR]...
+[\fB\-\-\fR \fIOVERRIDES\fR...]
+.PP
+.B mrun.py
+\fB\-m\fR \fIMODE\fR \fB\-loa\fR
+.PP
+.B mrun.py
+\fB\-lm\fR | \fB\-lb\fR | \fB\-lo\fR
+.SH DESCRIPTION
+.B mrun
+is a Python 3 (standard-library-only) utility that simplifies execution of complex CLI tools. It reads JSON configuration files describing executables, environment variables, default arguments, opt-in (optional) arguments, and placeholder variables, then assembles and runs a final command.
+.PP
+.B mrun
+is a lightweight declarative templating engine. It recursively scans a configuration directory, supports inheritance via the \fBinclude\fR key, and evaluates Python expressions (\fB@mrun_py\fR) and external environment variables (\fB@mrun_env\fR) directly inside the JSON. Flags that must repeat on the final command line are declared with the \fB@mrun_repeat\fR key marker. Flags whose only meaningful default is their absence are declared in \fBoptional_args\fR: documented, dormant by default, and activatable from the command line.
+.PP
+Every configuration file discovered by the scan of the configuration directory must declare \fBkind\fR and a non-empty \fBname\fR:
+.RS
+.IP \(bu 2
+\fBmode\fR \(em runnable; selected with \fB\-m\fR.
+.IP \(bu 2
+\fBbase\fR \(em include-only shared defaults; not selectable with \fB\-m\fR.
+.IP \(bu 2
+\fBoverlay\fR \(em named overlay; selected with \fB\-o\fR.
+.RE
+.PP
+Name collisions across the entire configuration directory are fatal. Files loaded outside the scan \(em explicit-path modes, patches, and includes that point outside the configuration directory \(em are exempt from \fBkind\fR/\fBname\fR validation as described in \fBMODE RESOLUTION\fR, \fBOVERLAYS AND PATCHES\fR, and \fBINCLUDE RESOLUTION\fR.
+.PP
+By default, when executing a mode, \fBmrun\fR prints the fully resolved command line and asks for confirmation. \fB\-y\fR skips confirmation. Execution timing is enabled by default; \fB\-T\fR disables it.
+.PP
+In dry-run reports and confirmations, an argument whose value is boolean \fItrue\fR renders as a bare flag (\fB\-\-flag\fR), not \fB\-\-flag True\fR. A literal string \fB"True"\fR renders quoted, e.g. \fB'True'\fR.
+.PP
+The assembled command and all hooks run as child processes inheriting \fBmrun\fR's working directory and standard streams.
+.SH OPTIONS
+.TP
+.B \-m, \-\-mode MODE
+Select the mode. Resolution order and error behavior: see \fBMODE RESOLUTION\fR.
+.TP
+.B \-lm, \-\-list\-modes
+List modes and exit. Flat, headerless, pipe-friendly. See \fBLISTING OUTPUT\fR. Listings trigger a full scan of the configuration directory; scan errors are fatal. Listings do not require \fB\-m\fR and do not pass the dynamic-content trust gate.
+.TP
+.B \-lb, \-\-list\-bases
+List bases and exit.
+.TP
+.B \-lo, \-\-list\-overlays
+List overlays and exit. If several listing flags are combined, only the first in the order \fB\-lm\fR > \fB\-lb\fR > \fB\-lo\fR is honored.
+.TP
+.B \-loa, \-\-list\-optional\-args
+With \fB\-m\fR \fIMODE\fR, list optional arguments declared anywhere in the mode's resolved chain (including overlays, patches, and CLI overrides) with their evaluated defaults and activation status, then exit 0. Requires \fB\-m\fR (absent \fB\-m\fR is a usage error, exit 2). No executable is needed: \fB\-loa\fR exits before the executable check. Because defaults are evaluated, the dynamic-content trust gate applies. Output format: see \fBOPTIONAL ARGUMENTS\fR.
+.TP
+.B \-s, \-\-show
+Show raw templates (sentinels and placeholders unsubstituted). By itself, this is a dry run: no execution, no confirmation, no hooks, no timing line; exit 0. Combined with \fB\-r\fR, shows raw templates then executes (with confirmation unless \fB\-y\fR is given). Can be combined with \fB\-S\fR to show both raw and resolved views. Reflects overlays, patches, and CLI overrides. See \fBDRY-RUN OUTPUT\fR.
+.TP
+.B \-S, \-\-show\-resolved
+Show resolved values (fully evaluated configuration). By itself, this is a dry run: no execution, no confirmation, no hooks, no timing line; exit 0. Combined with \fB\-r\fR, shows resolved values then executes (with confirmation unless \fB\-y\fR is given). Can be combined with \fB\-s\fR to show both raw and resolved views. See \fBDRY-RUN OUTPUT\fR.
+.TP
+.B \-r, \-\-run
+Force execution. By default, \fB\-s\fR and \fB\-S\fR are dry runs (no execution). Use \fB\-r\fR to actually run after showing the requested view(s). Without \fB\-s\fR or \fB\-S\fR, \fB\-r\fR has no effect (execution is already the default).
+.TP
+.B \-t, \-\-time
+Timing is on by default; this flag is a no-op retained for compatibility.
+.TP
+.B \-T, \-\-no\-time
+Do not measure or print execution time.
+.TP
+.B \-c, \-\-config\-dir DIR
+Directory containing the JSON configuration files. Overrides \fBMRUN_CONFIG_DIR\fR. See \fBCONFIGURATION DIRECTORY\fR for the default.
+.TP
+.B \-q, \-\-quiet
+Suppress \fB[WARNING]\fR and \fB[INFO]\fR messages on standard error. \fB[ERROR]\fR messages always print. \fB\-q\fR does \fInot\fR suppress the trust banner and prompt, the confirmation prompt and abort messages, dry-run/listing output (standard output), or the execution-time line.
+.TP
+.B \-y, \-\-yes, \-\-no\-confirm
+Skip the confirmation prompt; an \fB[INFO] Executing: ...\fR line is printed instead (suppressed by \fB\-q\fR). Also enabled by \fBMRUN_YES=1\fR.
+.TP
+.B \-o, \-\-overlay NAME
+Apply a named overlay after the resolved mode chain. \fINAME\fR must equal the \fBname\fR field of a scanned overlay; naming a mode or base is an error naming the correct selector. May be repeated. Overlays and patches are applied in command-line order.
+.TP
+.B \-p, \-\-patch PATH
+Apply an anonymous patch after the resolved mode chain. May be repeated. \fIPATH\fR may be an explicit filesystem path or a path/stem in the namespace (never matched by the \fBname\fR field). See \fBPATCH RESOLUTION\fR.
+.TP
+.B \-\-strict\-overlays
+Fail (exit 1, \fB[ERROR]\fR) if a named overlay declares \fBoverlay_for\fR and no entry matches the mode's include chain. Without it, incompatibility is a \fB[WARNING]\fR and execution continues (the overlay is still applied).
+.TP
+.B \-\-assume\-trusted
+Skip interactive dynamic-content trust prompts. Also enabled by \fBMRUN_ASSUME_TRUSTED=1\fR.
+.TP
+.B \-\-
+Separator. All following tokens are CLI overrides. See \fBOVERRIDE SYNTAX (CLI)\fR. The \fB\-\-key=value\fR form is \fInot\fR recognized anywhere; use \fB\-\-key value\fR.
+.SH CONFIGURATION DIRECTORY
+The configuration directory is chosen as follows:
+.RS
+.IP 1. 3
+\fB\-\-config\-dir\fR \fIDIR\fR, if given.
+.IP 2. 3
+Otherwise the \fBMRUN_CONFIG_DIR\fR environment variable, if set to a non-empty value (an empty value is ignored).
+.IP 3. 3
+Otherwise the directory named \fBconf\fR located next to the \fBmrun.py\fR script itself (i.e. \fI<script_dir>/conf\fR).
+.RE
+.PP
+The chosen directory is resolved to an absolute path. Discovery performs a recursive glob for \fB*.json\fR files, sorted by full path (component-wise lexicographic, Python \fBPath\fR ordering). This \fIscan order\fR determines the winner wherever a stem/path search can match more than one file (see \fBMODE RESOLUTION\fR and \fBPATCH RESOLUTION\fR). A missing or empty directory is not an error; it simply yields no configs (listings print nothing, and \fB\-m\fR then fails with "not found").
+.PP
+During the scan every file is parsed and validated: a missing or invalid \fBkind\fR (exactly one of \fBmode\fR, \fBbase\fR, \fBoverlay\fR; case-sensitive) or a missing or empty \fBname\fR is fatal, as is a duplicate \fBname\fR. Malformed JSON or an unreadable file aborts the scan with an error. Scan errors are fatal for listings as well. Scan results are cached; a file is parsed at most once per invocation.
+.SH MODE RESOLUTION
+Given \fB\-m\fR \fIMODE\fR:
+.RS
+.IP 1. 3
+\fBName match.\fR If \fIMODE\fR equals the \fBname\fR of a scanned config: kind \fBmode\fR is selected; kind \fBoverlay\fR errors with "Use --overlay \fIMODE\fR instead"; kind \fBbase\fR errors as include-only. All are fatal (exit 1).
+.IP 2. 3
+\fBExplicit path.\fR If \fIMODE\fR starts with \fB/\fR, \fB./\fR, \fB../\fR, or \fB~\fR: expand \fB~\fR and resolve. The file must exist \fIand\fR end in \fB.json\fR, and its \fBkind\fR must be \fBmode\fR (else a fatal error). If the file does not exist or lacks the \fB.json\fR suffix the result is "not found". The configuration namespace is never consulted in this branch. \fBname\fR is not required of an explicit-path mode (unless the file lies inside the scanned configuration directory, in which case the scan has already enforced it).
+.IP 3. 3
+\fBNamespace path or stem.\fR Form the candidate \fI<config_dir>/MODE\fR; if its final suffix is not \fB.json\fR, that suffix is replaced by \fB.json\fR (a \fIMODE\fR with no suffix simply gains \fB.json\fR). If the candidate exists, its \fBkind\fR must be \fBmode\fR; a kind mismatch is "not found" (no further searching). If the candidate does not exist, scanned files are tested \fIin scan order\fR: the first file whose stem equals \fIMODE\fR or whose config-relative path equals \fIMODE\fR or \fIMODE.json\fR is selected if its kind is \fBmode\fR; if the first match has another kind, or nothing matches, the result is "not found".
+.RE
+.PP
+A "not found" result prints \fB[ERROR] Configuration '\fIMODE\fB' not found\fR and exits 1.
+.SH OVERLAYS AND PATCHES
+.SS Named overlays
+A named overlay is a config with \fB"kind": "overlay"\fR, selected by its \fBname\fR via \fB\-o NAME\fR.
+.RS
+.IP \(bu 2
+listed by \fB\-lo\fR
+.IP \(bu 2
+may declare compatibility with \fBoverlay_for\fR
+.IP \(bu 2
+cannot be selected with \fB\-m\fR
+.RE
+.PP
+Naming a config of another kind via \fB\-o\fR is a fatal error suggesting \fB\-m\fR; an unknown name is a fatal error suggesting \fB\-\-list\-overlays\fR.
+.PP
+\fBoverlay_for\fR (string or list) is matched against the \fBmode's include chain only\fR (not against earlier overlays/patches). For each chain config, the match set is: its resolved absolute path, its filename, its config-relative path, and its \fBname\fR. If any \fBoverlay_for\fR entry equals any of these, the overlay is compatible. Omitting \fBoverlay_for\fR means compatible with all modes. Incompatibility is an \fB[ERROR]\fR and exit 1 under \fB\-\-strict\-overlays\fR, otherwise a \fB[WARNING]\fR; in both cases the message names the overlay and the \fBoverlay_for\fR list.
+.SS Anonymous patches
+A patch is any JSON object applied with \fB\-p\fR. Patches:
+.RS
+.IP \(bu 2
+need no \fBkind\fR or \fBname\fR (never validated)
+.IP \(bu 2
+are not listed
+.IP \(bu 2
+may be used with any mode
+.IP \(bu 2
+may also be regular scanned configs (a mode/base/overlay file can be applied as a patch; its \fBkind\fR is then irrelevant)
+.RE
+.SS Patch resolution
+.RS
+.IP 1. 3
+\fBExplicit path.\fR If \fIPATH\fR starts with \fB/\fR, \fB./\fR, \fB../\fR, or \fB~\fR: expand and resolve; the file must exist (no \fB.json\fR suffix requirement). A missing file is a fatal "Patch file not found" error; the namespace is not consulted.
+.IP 2. 3
+\fBNamespace path.\fR Try \fI<config_dir>/PATH\fR; if the final suffix is not \fB.json\fR it is replaced by \fB.json\fR. If that file exists it is used, with no \fBkind\fR check.
+.IP 3. 3
+\fBStem/relative search.\fR Scanned files are tested in scan order; the first file whose stem equals \fIPATH\fR or whose config-relative path equals \fIPATH\fR or \fIPATH.json\fR is used, with no \fBkind\fR check. The \fBname\fR field is never consulted. No match is a fatal "Patch file not found" error.
+.RE
+.SS Application order
+.RS
+.nf
+1. The mode's include chain (bases ... selected mode).
+2. Each -o and -p, in command-line order.
+3. CLI overrides after --.
+.fi
+.RE
+.PP
+Later layers override earlier layers. Each overlay/patch is itself resolved through its own \fBinclude\fR chain before being appended (see \fBINCLUDE RESOLUTION\fR), using the \fIsame\fR shared \fIseen\fR set as the mode chain. Consequently a layer whose root file was already visited anywhere in the run contributes nothing (a silent no-op). A failure while resolving a layer is fatal: \fB[ERROR] Error resolving overlay|patch '\fIVALUE\fB': ...\fR (exit 1).
+.SH CONFIGURATION FILES
+Configuration files are JSON objects. Supported keys:
+.TP
+.B kind
+\fBmode\fR, \fBbase\fR, or \fBoverlay\fR. Required (and validated) only for files discovered by the directory scan.
+.TP
+.B name
+Unique, non-empty identifier. Required for scanned files; collisions are fatal. A layer that declares \fBname\fR updates the run's current name (visible in the \fB\-loa\fR header); the last such layer wins.
+.TP
+.B description
+(Optional) Human-readable text shown in listings, printed verbatim.
+.TP
+.B overlay_for
+(Optional, overlays) String or list; see \fBNamed overlays\fR.
+.TP
+.B include
+(Optional) A filename string or list of filename strings to inherit from. Entries are literal path fragments: no placeholders, sentinels, or \fB~\fR expansion. See \fBINCLUDE RESOLUTION\fR.
+.TP
+.B executable
+Path to the binary. May contain placeholders and sentinels. A mode must define or inherit one; a missing or falsy resolved executable is fatal.
+.TP
+.B vars
+Object of placeholder variables.
+.TP
+.B env
+Object of environment variables for the child process. Keys are used verbatim (never substituted).
+.TP
+.B args
+Object of command-line arguments, always passed. See \fBCOMMAND CONSTRUCTION\fR.
+.TP
+.B optional_args
+Object of opt-in flags with defaults, not passed unless activated. Must be a JSON object; see \fBOPTIONAL ARGUMENTS\fR.
+.TP
+.B pre_run
+(Optional) Command(s) run before the executable.
+.TP
+.B post_run
+(Optional) Command(s) run after the executable.
+.SH INCLUDE RESOLUTION
+\fBinclude\fR names are resolved \fBrelative to the directory of the file that contains them\fR. If the resolved path does not exist and its final suffix is not \fB.json\fR, the suffix is replaced by \fB.json\fR and retried; a still-missing include is fatal (\fB[ERROR] Include not found: '\fIinc\fB' (from \fIfile\fB)\fR, exit 1). Include targets may lie outside the configuration directory; such files are parsed and cached but are not subject to \fBkind\fR/\fBname\fR validation.
+.PP
+Chains are resolved depth-first, post-order: a file's includes are emitted before the file itself, so the final chain runs from the deepest base to the selected config. Circular includes are detected and fatal, reporting the cycle path (\fBCircular include detected: A -> B -> A\fR). A file already visited anywhere in the run (the shared \fIseen\fR set, which covers the mode chain, every overlay/patch chain, and all includes) is not re-emitted and its includes are not re-processed, so diamond inheritance collapses to a single occurrence.
+.SH EVALUATION MODEL
+The merged chain (mode chain, then overlays/patches in command-line order) is evaluated in a fixed section order:
+.RS
+.IP 1. 3
+\fBvars\fR \(em every layer in chain order; then \fB\-\-var\fR overrides in command-line order; then \fB\-\-key\fR overrides whose key names an existing variable (a bare such token sets the variable to \fItrue\fR). All \fB\-\-var\fR overrides apply before any variable-matching \fB\-\-key\fR override, regardless of their relative position on the command line.
+.IP 2. 3
+\fBenv\fR \(em every layer.
+.IP 3. 3
+\fBargs\fR and \fBoptional_args\fR \(em every layer; then the remaining CLI arg overrides.
+.IP 4. 3
+\fBexecutable\fR \(em every layer.
+.IP 5. 3
+\fBpre_run\fR / \fBpost_run\fR \(em \fBcollected raw\fR, not evaluated. A later layer replaces the earlier list entirely; a bare string becomes a one-element list. Evaluation happens at hook execution time (see \fBHOOK EXECUTION FLOW\fR).
+.IP 6. 3
+positional arguments (CLI only) \(em each is evaluated like any other value with \fBval\fR = \fInull\fR (sentinels, placeholders, and coercion all apply).
+.RE
+.PP
+Within a section, each key is evaluated layer by layer; the previous layer's evaluated value for that key is supplied to the next layer as \fBval\fR (\fInull\fR if no earlier layer defined the key; for a CLI override, the current resolved value). Evaluation is eager and per-layer: a failing \fB@mrun_env\fR or \fB@mrun_py\fR in a base errors even if a derived layer redefines the key. Any evaluation error is fatal (\fB[ERROR]\fR, exit 1).
+.PP
+Because variable overrides are folded into section 1, they are visible to every later placeholder and expression. Argument overrides only take effect from section 3 onward.
+.PP
+The \fBargs\fR dict visible to \fB@mrun_py\fR always contains clean flag names (the \fB@mrun_repeat\fR marker is stripped; the flag is recorded in a "repeating" set). It reflects the always-on arguments evaluated \fIso far\fR: empty during \fBvars\fR/\fBenv\fR, complete \(em including CLI-activated flags \(em from \fBexecutable\fR onward. Dormant optional arguments never appear in it.
+.PP
+Repeat marking is sticky: once any layer marks a flag, it stays marked. If layers disagree about a flag's status, the later layer wins: redefining a flag in \fBargs\fR promotes it to always-on and retires any optional entry; redefining it in \fBoptional_args\fR demotes it to opt-in and retires any always-on entry. A promoted/demoted flag is appended to its new section at that layer's position. Declaring the same flag in both sections within one file is fatal (the message lists the offending flags, sorted).
+.SH TYPE COERCION
+String values that result from evaluation are coerced to numbers where unambiguous; there is \fBno boolean coercion\fR.
+.RS
+.IP \(bu 2
+An exact match of \fB\-?\ed+\fR becomes an \fBint\fR.
+.IP \(bu 2
+An exact match of \fB\-?(\ed+\e.\ed*|\e.\ed+|\ed+)([eE][+\-]?\ed+)?\fR becomes a \fBfloat\fR, but only if the string contains a \fB.\fR or an \fBe\fR/\fBE\fR (so a bare integer is an int, not a float).
+.IP \(bu 2
+Anything else, including the empty string, is left unchanged.
+.RE
+.PP
+Thus \fB"23"\fR\(->\fB23\fR, \fB"2.5"\fR\(->\fB2.5\fR, \fB"1e3"\fR\(->\fB1000.0\fR, but \fB"true"\fR, \fB"0x10"\fR, and \fB"12abc"\fR remain strings. JSON-native numbers, booleans, and \fInull\fR pass through evaluation unchanged. Use \fB@mrun_str:\fR to suppress coercion of a string.
+.SH PLACEHOLDER SUBSTITUTION
+Placeholders have the form \fB{name}\fR where \fIname\fR matches \fB[a-zA-Z_][a-zA-Z0-9_]*\fR. They are replaced from the resolved \fBvars\fR.
+.RS
+.IP \(bu 2
+An unknown placeholder is left literal. There is no escape mechanism for literal braces.
+.IP \(bu 2
+A string variable value is substituted recursively, to a maximum nesting depth of 10 (deeper recursion stops and returns the string as-is).
+.IP \(bu 2
+A boolean value renders as \fBtrue\fR/\fBfalse\fR; \fInull\fR renders as the empty string; all other values (numbers, lists, dicts) render via Python \fBstr()\fR.
+.RE
+.PP
+After substitution, the whole result is type-coerced (except where a sentinel specifies otherwise).
+.SH SENTINEL REFERENCE
+Sentinels are recognized only as a string \fBprefix\fR. The multi-token sentinels carry a single trailing space in their prefix (\fB@mrun_py \fR, \fB@mrun_env \fR, \fB@mrun_list \fR). Values that are not strings (JSON numbers, booleans, \fInull\fR, arrays) are not sentinel-checked; arrays are evaluated element by element; objects pass through evaluation unchanged and are stringified with \fBstr()\fR whenever substituted or rendered.
+.TP
+.B @mrun_true / @mrun_false
+Recognized by exact string match; force boolean true/false.
+.TP
+.B @mrun_str:<value>
+Return the text after the colon \fBverbatim, without stripping\fR (a leading space is preserved). No numeric coercion, no placeholder substitution, no further sentinel evaluation. Use it to pass values that begin with \fB\-\-\fR or that look like sentinels.
+.TP
+.B @mrun_env NAME [default]
+Fetch environment variable \fINAME\fR from the \fBmrun\fR process environment (not the config's \fBenv\fR section). The text after the prefix is split on whitespace: the first token is \fINAME\fR, which must match \fB[A-Za-z_][A-Za-z0-9_]*\fR or the sentinel is malformed (fatal).
+.sp
+If \fINAME\fR is set, its value is used \fBverbatim\fR: no sentinel evaluation, no placeholder substitution, no type coercion. A variable set to the empty string counts as set.
+.sp
+If \fINAME\fR is unset and a default is present, the default is the remainder after \fINAME\fR, stripped of surrounding whitespace. It is evaluated by placeholder substitution followed by type coercion \fBonly\fR \(em no sentinel re-evaluation (a default beginning \fB@mrun_py \fR stays literal). A default that is empty after stripping counts as \fIno\fR default.
+.sp
+If \fINAME\fR is unset and there is no default, \fBmrun\fR aborts with an error. A bare \fB@mrun_env\fR with no name is a separate fatal error.
+.sp
+Notes:
+.RS
+.IP \(bu 2
+Values resolve before \fBpre_run\fR hooks execute, so hook-exported variables are not visible.
+.IP \(bu 2
+All layers' \fBvars\fR and all \fBoptional_args\fR defaults evaluate eagerly, so a required (defaultless) \fB@mrun_env\fR errors even when overridden later or dormant. Give it a default.
+.IP \(bu 2
+\fB@mrun_env\fR is static text and never triggers the trust prompt.
+.IP \(bu 2
+Escape with \fB@mrun_str:@mrun_env ...\fR for a literal string.
+.RE
+.TP
+.B @mrun_py <expression>
+Evaluate a Python expression with \fBeval(\fIexpr\fB, mrun_globals, \fIctx\fB)\fR. The globals are \fBmrun\fR's own module namespace: the imported standard-library modules (\fBargparse\fR, \fBhashlib\fR, \fBjson\fR, \fBos\fR, \fBre\fR, \fBsys\fR, \fBmath\fR, \fBsubprocess\fR, \fBtime\fR, \fBshlex\fR), \fBpathlib.Path\fR, and \fBmrun\fR's helper functions. The context provides \fBval\fR (the prior layer's value, \fInull\fR if none), \fBvars\fR, and \fBargs\fR (see \fBEVALUATION MODEL\fR); in hooks additionally \fBret\fR and \fBok\fR (see \fBHOOK EXECUTION FLOW\fR). The result is used as-is, with no further coercion. Errors are fatal: \fB[ERROR] Error evaluating '@mrun_py \fI...\fB': ...\fR (exit 1). See \fBSECURITY\fR.
+.TP
+.B @mrun_list <items>
+\fBCLI-only.\fR Build a list by shell-splitting (\fBshlex.split\fR) the text after the prefix; parsing happens when overrides are parsed, and a shell-splitting error is fatal. Using it inside a JSON configuration file is a fatal error; use native JSON arrays there.
+.TP
+.B @mrun_repeat <flag>
+Key-side marker, valid only on \fBargs\fR and \fBoptional_args\fR keys. Declares \fIflag\fR repeatable: each element of a list value is emitted as its own flag occurrence instead of one multi-value occurrence.
+.sp
+.RS
+.nf
+"args": {
+"@mrun_repeat --request_option": [
+"this={thing_one}",
+"that={thing_two}"
+]
+}
+.fi
+.RE
+.sp
+renders as \fB\-\-request_option this=... \-\-request_option that=...\fR.
+.sp
+Elements are evaluated like any other value. A nested list element emits a single multi-value occurrence: \fB[["a","b"],"c"]\fR \(-> \fB\-\-flag a b \-\-flag c\fR. \fB@mrun_true\fR elements emit the bare flag; \fB@mrun_false\fR, \fInull\fR, and empty lists emit nothing. Deeper nesting is an error.
+.sp
+The marker must be exactly \fB@mrun_repeat <flag>\fR: a bare \fB@mrun_repeat\fR key, a missing flag, or leading/trailing whitespace in the flag is malformed and fatal. Marking is sticky across the whole chain. The marker is rejected (fatal) on \fBvars\fR and \fBenv\fR keys and in CLI overrides. It never triggers the trust prompt.
+.SH OPTIONAL ARGUMENTS
+Some tools have no default for a flag: the only "default" is the flag's absence. Such flags cannot live in \fBargs\fR. \fBoptional_args\fR declares them with a reasonable default, kept \fBdormant\fR until activated from the CLI.
+.SS Declaration
+.RS
+.nf
+"optional_args": {
+"--verbose": true,
+"--crf": 23,
+"--preset": "medium",
+"--log": "@mrun_env ENCODE_LOG encode.log",
+"@mrun_repeat --metadata": ["title=Untitled"]
+}
+.fi
+.RE
+.PP
+Keys must be \fB\-\-\fR-prefixed flags longer than two characters, optionally preceded by the \fB@mrun_repeat\fR marker; any other key is fatal, as is a non-object \fBoptional_args\fR value. Values mean:
+.RS
+.IP \(bu 2
+\fBtrue\fR \(em a no-argument flag; activation passes the bare flag.
+.IP \(bu 2
+any other value \(em a reasonable default; bare activation passes \fIFLAG DEFAULT\fR.
+.IP \(bu 2
+\fInull\fR \(em no default; bare activation is a fatal error, an explicit value is required.
+.RE
+.SS Activation
+Activation after \fB\-\-\fR follows the normal override rules. A bare \fB\-\-crf\fR uses the stored (evaluated) default; an explicit value overrides it (with \fBval\fR = \fInull\fR if the flag was dormant). Repeat-marked optionals accumulate repeated CLI occurrences; a bare activation of a list default emits one occurrence per element. Once activated, the flag renders exactly like a regular \fBargs\fR entry and appears in the \fBargs\fR context of \fB@mrun_py\fR.
+.SS Inheritance
+\fBoptional_args\fR is valid in any kind (mode, base, overlay, patch) and merges down the chain like \fBargs\fR; the later layer wins for both status and value (see \fBEVALUATION MODEL\fR for promotion/demotion).
+.SS Evaluation and reporting
+Defaults evaluate eagerly at load time (even while dormant), so \fB@mrun_env\fR and \fB@mrun_py\fR work in them and can be reported by \fB\-loa\fR, \fB\-s\fR, and \fB\-S\fR. Eager evaluation means a required \fB@mrun_env\fR errors on every run; \fB@mrun_py\fR in a default is dynamic content and triggers the trust prompt.
+.PP
+At run time (real runs only) a single \fB[INFO]\fR line lists dormant optional flags in chain-declaration order (suppressed by \fB\-q\fR):
+.RS
+.nf
+[INFO] N optional argument(s) available, not passed: --a, --b (see --list-optional-args)
+.fi
+.RE
+.SS \-loa output format
+.RS
+.nf
+Optional arguments for 'MODE' (not passed by default; activate after '--'):
+--crf      23                (not passed)
+--preset   'medium'          (not passed)
+--verbose  (flag, no value)  (not passed)
+Activate with:
+mrun.py -m <mode> -- <flag>            # bare: uses default
+mrun.py -m <mode> -- <flag> <value>     # explicit override
+.fi
+.RE
+.PP
+\fIMODE\fR in the header is the \fBname\fR of the last layer in the resolved chain that declares one. Columns are padded to the widest label and widest default, separated by two spaces. Defaults display as \fB(flag, no value)\fR for \fItrue\fR, \fB(no default; value required)\fR for \fInull\fR, otherwise the \fBrepr()\fR of the evaluated value. Status is \fB(ACTIVE)\fR if the flag is present in the resolved args (e.g. activated by overrides after \fB\-\-\fR), else \fB(not passed)\fR. With no optional args, the body is \fB  (none)\fR.
+.SH OVERRIDE SYNTAX (CLI)
+Tokens after \fB\-\-\fR override variables, modify/add arguments, activate optional arguments, or pass positional arguments. Tokens are scanned left to right. Only \fB\-\-\fR-prefixed tokens longer than two characters are treated as flags; single-dash tokens and everything else are positional. The form \fB\-\-key=value\fR is not recognized: \fB\-\-crf=18\fR is treated as a flag literally named \fB\-\-crf=18\fR.
+.TP
+.B \-\-key value
+If \fIkey\fR names an existing variable, the variable is overridden (see below). Otherwise \fB--key\fR is written into the argument set, replacing any configured value for that flag; the flag keeps the position of its first appearance in the argument set. For repeat-marked flags see below.
+.TP
+.B \-\-key \fR(bare)
+A flag is bare when it is the last override token, or when the next token begins with \fB\-\-\fR and is longer than two characters (the next token is then treated as its own flag, so several flags can be activated together). A token that is exactly \fB\-\-\fR does not look like a flag and is consumed as a value.
+.sp
+A bare flag declared in \fBoptional_args\fR activates with its stored default; with no optional declaration it becomes \fItrue\fR and renders bare; with an optional declaration of \fInull\fR it is fatal. A bare token matching a variable name sets that variable to \fItrue\fR.
+.sp
+To pass a literal value beginning with \fB\-\-\fR, use \fB@mrun_str:\fR, e.g. \fB\-\-grep @mrun_str:\-\-pattern\fR.
+.TP
+.B Repeated \-\-key occurrences
+For a repeat-marked flag: the first CLI occurrence replaces the configured value; each subsequent occurrence appends (a list value appends all of its elements; a scalar configured value is treated as a one-element list). To extend the configured list instead of replacing it, use \fB@mrun_py\fR: \fB\-\-request_option "@mrun_py val + ['extra=1']"\fR. For all other flags and variables, the last occurrence wins.
+.TP
+.B \-\-var key=value
+Explicitly override a variable. Requires a following token containing \fB=\fR; split on the first \fB=\fR. The key must not carry \fB@mrun_repeat\fR. The value is evaluated like any other (so \fB@mrun_py\fR and \fB@mrun_env\fR work; \fB@mrun_py\fR consumes the next token as its expression unless it is absent or looks like a \fB\-\-\fRflag, and \fB@mrun_list\fR builds a list).
+.TP
+.B Variable overrides vs. argument overrides
+\fB\-\-var\fR overrides and \fB\-\-key\fR overrides whose key names an existing variable are applied during the \fBvars\fR stage (see \fBEVALUATION MODEL\fR): all \fB\-\-var\fR overrides first, then variable-matching \fB\-\-key\fR overrides, each evaluated with \fBval\fR set to the current variable value. They therefore affect placeholders in \fBenv\fR, \fBargs\fR, \fBexecutable\fR, and hooks. All other \fB\-\-key\fR overrides are applied after the \fBargs\fR/\fBoptional_args\fR stages.
+.TP
+.B Positional arguments
+Any token not consumed as a flag or flag value is appended, in order, after all flags. Positional arguments are evaluated like any other value (\fB@mrun_str:\fR, \fB@mrun_py\fR, placeholders, and coercion all apply) and stringified when the command is built.
+.TP
+.B @mrun_py on the CLI
+The expression must be the immediately following token. Example: \fBmrun.py -m mymode -- --width @mrun_py 'val * 2'\fR.
+.TP
+.B @mrun_env on the CLI
+Quote the token so the name and default stay together. Example: \fBmrun.py -m mymode -- --var "p=@mrun_env MY_DIR /tmp"\fR.
+.TP
+.B @mrun_list on the CLI
+Builds a list from a single shell token via \fBshlex.split\fR. Example: \fBmrun.py -m mymode -- --loras "@mrun_list 'lora_a:0.8' 'lora_b:0.5'"\fR. Under a repeat-marked flag the list renders one occurrence per element; otherwise a single multi-value occurrence.
+.PP
+CLI overrides are explicit user intent and never trigger the trust prompt.
+.SH COMMAND CONSTRUCTION
+The command is built as an \fBargv list\fR and executed directly (no shell) via \fBsubprocess.run(cmd, env=...)\fR. Quoting with \fBshlex.quote()\fR is applied \fIonly\fR when displaying the command, never when executing it.
+.PP
+Assembly order: the executable (stringified), then each argument in insertion order of the resolved argument set, then positional arguments (stringified).
+.PP
+Rendering rules per argument value:
+.RS
+.IP \(bu 2
+\fBtrue\fR \(em emit the bare flag.
+.IP \(bu 2
+\fBfalse\fR or \fInull\fR \(em emit nothing.
+.IP \(bu 2
+list \(em emit \fIkey\fR followed by each element (a single multi-value occurrence), each element stringified. Elements must be scalars: a nested list, tuple, or dict inside a list value is a fatal error, except under \fB@mrun_repeat\fR, which allows one nesting level to group multi-value occurrences.
+.IP \(bu 2
+anything else (numbers, strings, dicts, ...) \(em emit \fBkey value\fR, the value stringified with \fBstr()\fR.
+.RE
+.PP
+A repeat-marked flag emits one occurrence per top-level element of its value (a scalar value is a single occurrence), applying the rules above to each element.
+.PP
+A missing or falsy executable is fatal (\fB[ERROR] No executable defined in configuration\fR, exit 1). This check runs before dry-run output, so \fB\-s\fR/\fB\-S\fR also fail without an executable; \fB\-loa\fR exits before it.
+.SH HOOK EXECUTION FLOW
+Hooks are stored as raw templates during evaluation and evaluated \fBwhen the hooks execute\fR, with the final resolved \fBvars\fR and \fBargs\fR. Each raw hook is evaluated first; the type of the evaluated value determines what happens:
+.RS
+.IP \(bu 2
+\fInull\fR (including an \fB@mrun_py\fR expression that returns \fBNone\fR) \(em the hook is skipped.
+.IP \(bu 2
+an integer \(em treated as an already-computed exit code: 0 continues to the next hook; any nonzero value aborts the hook sequence. Booleans count as integers (\fItrue\fR=1, \fIfalse\fR=0).
+.IP \(bu 2
+a string \(em executed with \fBshell=True\fR (the system shell).
+.IP \(bu 2
+a list \(em executed as an argv array (elements stringified), no shell.
+.IP \(bu 2
+any other type \(em a warning is emitted and the hook sequence aborts with code 1.
+.RE
+.PP
+The run proceeds:
+.RS
+.IP 1. 3
+\fBPre-run (strict).\fR Hooks run in order with the \fBret\fR/\fBok\fR context unset (\fInull\fR) and no \fBMRUN_RET\fR/\fBMRUN_OK\fR in the environment. If any pre-run hook fails (nonzero exit code, nonzero integer result, unsupported type, or a spawn/runtime exception), \fBmrun\fR emits a \fB[WARNING]\fR, skips the executable and post_run hooks, and returns the failing hook's code (1 for exceptions and unsupported types). Remaining hooks are not run. An error in a hook's \fB@mrun_py\fR expression is fatal (exit 1).
+.IP 2. 3
+\fBMain executable.\fR Runs only if pre-run succeeded.
+.IP 3. 3
+\fBPost-run (resilient).\fR Runs whenever pre-run succeeded, \fIregardless of the executable's outcome\fR \(em including a missing executable (127) and a user interrupt (130). Each hook's context provides \fBret\fR (int) and \fBok\fR (bool), and its environment adds \fBMRUN_RET\fR (stringified exit code) and \fBMRUN_OK\fR (\fBtrue\fR/\fBfalse\fR). A failing post-run hook emits a \fB[WARNING]\fR and stops the remaining post-run hooks, but never changes the returned exit code. An error in a post-run hook's \fB@mrun_py\fR expression is fatal and supersedes the normal exit code.
+.IP 4. 3
+\fBFinal exit code.\fR \fBmrun\fR returns the main executable's code.
+.RE
+.PP
+Each hook is an independent subprocess with the same environment as the executable (see \fBENVIRONMENT PASSING\fR); hooks do not share a shell session with each other or with the executable, so environment exported by a hook does not persist. Hooks inherit \fBmrun\fR's working directory and standard streams.
+.PP
+Later layers \fBreplace\fR (do not append to) an earlier layer's \fBpre_run\fR/\fBpost_run\fR. A bare string hook is treated as a one-element list.
+.SH DYNAMIC CONTENT TRUST
+\fBmrun\fR scans every resolved configuration \fIfile\fR in the chain (mode, includes, overlays, patches) for dynamic content:
+.RS
+.IP \(bu 2
+any \fB@mrun_py \fR prefix (with the trailing space) in a \fIvalue\fR anywhere inside \fBvars\fR, \fBenv\fR, \fBargs\fR, or \fBoptional_args\fR (recursively, including list elements and nested objects; keys are not scanned);
+.IP \(bu 2
+an \fBexecutable\fR that is a string starting with \fB@mrun_py \fR;
+.IP \(bu 2
+the mere presence of a \fBpre_run\fR or \fBpost_run\fR key, whatever its value.
+.RE
+.PP
+\fB@mrun_repeat\fR and \fB@mrun_env\fR are static text and never trigger the prompt. CLI overrides never trigger it. The gate applies to \fB\-s\fR, \fB\-S\fR, and \fB\-loa\fR as well as real runs; plain listings (\fB\-lm\fR/\fB\-lb\fR/\fB\-lo\fR) never pass it.
+.PP
+If any file with dynamic content is not trusted, \fBmrun\fR prints this banner to standard error (never suppressed by \fB\-q\fR) and prompts:
+.RS
+.nf
+==============================================================
+[SECURITY] Dynamic code detected in configuration.
+==============================================================
+Untrusted file(s) containing dynamic content:
+\(bu <resolved path>
+...
+Options:
+[D] Deny            \(em abort immediately
+[A] Allow once      \(em proceed, do not remember
+[T] Trust 30 days   \(em remember these files
+Choice (D/a/t):
+.fi
+.RE
+.PP
+The response is read, stripped, and lowercased: \fBa\fR proceeds without remembering; \fBt\fR records every listed file, prints \fB[INFO] Trust saved for 30 days.\fR (suppressed by \fB\-q\fR), and proceeds; anything else \(em \fBd\fR, an empty line, or any other input \(em prints "Denied." and exits 1. EOF or an interrupt at the prompt prints "Denied (no interactive input)." and exits 1. With \fB\-\-assume\-trusted\fR or \fBMRUN_ASSUME_TRUSTED=1\fR the gate is skipped entirely.
+.PP
+Trust records live in the trust store (see \fBFILES\fR), keyed by the file's fully resolved path (symlinks resolved). A record stores \fB{ "hash": <sha256 hex>, "mtime": <float>, "trusted_at": <epoch seconds> }\fR. On every check the record is valid only if the file's current SHA-256 and mtime both match exactly and no more than 30 days have elapsed since \fBtrusted_at\fR. The store is pruned of expired entries on every save, and a corrupt or unreadable store is treated as empty.
+.SH CONFIRMATION
+Before executing (default; not for dry runs, listings, or \fB\-loa\fR), \fBmrun\fR prints to standard error (never suppressed by \fB\-q\fR):
+.RS
+.nf
+=== Command (Resolved) ===
+<shlex-quoted command>
+Run this command? [y/N]:
+.fi
+.RE
+.PP
+The command string is \fB' '.join(shlex.quote(part))\fR. Only \fBy\fR or \fByes\fR (after strip/lowercase) starts execution. Any other answer or an interrupt at the prompt aborts ("Aborted.", exit 1); EOF aborts with \fB[ERROR] Confirmation required; use -y/--yes/--no-confirm for unattended runs.\fR (exit 1). \fB\-y\fR/\fBMRUN_YES=1\fR replaces the prompt with an \fB[INFO] Executing: <command>\fR line.
+.SH DRY-RUN OUTPUT
+Both \fB\-s\fR and \fB\-S\fR print the sections below to standard output, in order, then the final command. Empty sections print \fB  (none)\fR. Both reflect overlays, patches, and CLI overrides; CLI-provided values appear in the raw sections exactly as given on the command line (a bare activation records \fB@mrun_true\fR, or the optional's raw default template when a bare optional flag is activated). When used alone, no confirmation, hooks, or timing line occur; exit 0. When combined with \fB\-r\fR, execution proceeds after the display (with confirmation unless \fB\-y\fR is given).
+.PP
+\fB\-s\fR and \fB\-S\fR can be combined to show both views. When both are requested, raw sections are printed first, then resolved sections, then the command once.
+.PP
+\fB\-s\fR (Raw) sections: \fBVariables (Raw)\fR, \fBEnvironment Variables (Raw)\fR, \fBArguments (Raw)\fR, \fBOptional Arguments (Raw)\fR, \fBExecutable (Raw)\fR, \fBPre-Run Hooks (Raw)\fR, \fBPost-Run Hooks (Raw)\fR, \fBPositional Arguments (Raw)\fR, \fBCommand (Resolved)\fR. Raw templates are shown with \fBrepr()\fR; repeat-marked keys are prefixed \fB@mrun_repeat \fR; optional entries carry \fB[not passed]\fR or \fB[ACTIVE]\fR. Hooks are shown indexed (\fB[0]\fR, \fB[1]\R, ...) as are positionals.
+.PP
+\fB\-S\fR (Resolved) sections mirror these with \fB(Resolved)\fR headers and evaluated values. Asymmetries: environment values print unquoted (\fB{k} {v}\fR), the executable prints unquoted, and hook sections print the \fIraw templates\fR as unquoted text \(em hooks are only evaluated at execution time, so the "resolved" view intentionally shows their templates. Everything else uses \fBrepr()\fR for scalars.
+.PP
+In both, argument lines are:
+.RS
+.nf
+--flag                 (boolean true: bare)
+--key value            (otherwise; value via repr)
+.fi
+.RE
+.PP
+The final command line is identical in both and matches the confirmation string.
+.SH LISTING OUTPUT
+\fB\-lm\fR, \fB\-lb\fR, \fB\-lo\fR print flat, headerless rows sorted by \fBname\fR (case-sensitive, Python string ordering). Columns are padded to the widest name and widest relative path, separated by two spaces; the description, when present, is wrapped in double quotes and printed verbatim (no escaping). Rows without a description omit the quoted column and trailing padding:
+.RS
+.nf
+$ mrun.py -lm
+f2k       sd_cli_examples/sd_f2k.json       "Flux.2 Klein 9B - Gen"
+krea2     sd_cli_examples/sd_krea2.json     "Krea2 - Gen"
+ltx2_t2v  sd_cli_examples/sd_ltx2_t2v.json  "LTX2 - T2V"
+.fi
+.RE
+.PP
+Paths are shown relative to the configuration directory. Empty results print nothing. Exit 0.
+.SH EXECUTION TIMING
+When timing is enabled (default), the wall-clock span from just before the pre-run hooks to just after the post-run hooks is measured \(em it includes hooks and the main executable, but not scanning, resolution, trust prompts, or confirmation. After the post-run hooks, \fBmrun\fR prints to standard error (a blank line precedes; \fBnot\fR suppressed by \fB\-q\fR):
+.RS
+.nf
+Execution time: [Dd ][HH:]MM:SS (N.Ns)
+.fi
+.RE
+.PP
+Examples: \fB00:05 (5.2s)\fR, \fB01:02:03 (3723.4s)\fR, \fB1d 01:02:03 (90123.4s)\fR (days and hours appear only when nonzero; raw seconds always carry one decimal). The line is not printed for listings, \fB\-loa\fR, dry runs, trust denial, confirmation abort, evaluation errors, or when \fBmrun\fR aborts on a failed pre-run hook. \fB\-T\fR disables it.
+.SH DIAGNOSTICS
+\fB[INFO] ...\fR and \fB[WARNING] ...\fR go to standard error and are suppressed by \fB\-q\fR. \fB[ERROR] ...\fR goes to standard error and always prints. Notable \fB[INFO]\fR lines:
+.RS
+.IP \(bu 2
+\fBLoading config: <path>\fR
+.IP \(bu 2
+\fBApplying overlay: <path>\fR / \fBApplying patch: <path>\fR
+.IP \(bu 2
+\fBExecuting: <command>\fR (with \fB\-y\fR)
+.IP \(bu 2
+\fBN optional argument(s) available, not passed: ...\fR
+.IP \(bu 2
+\fBInterrupted by user\fR (interrupt during the main executable)
+.IP \(bu 2
+\fBTrust saved for 30 days.\fR
+.RE
+.PP
+Warnings cover overlay incompatibility and hook failures. Not suppressed by \fB\-q\fR are: \fB[ERROR]\fR lines, the trust banner/prompt/denial messages, the confirmation prompt and "Aborted." messages, dry-run and listing output (standard output), and the execution-time line.
+.SH EXIT STATUS
+.RS
+.IP 0
+Success (including successful dry runs, listings, and \fB\-loa\fR).
+.IP 1
+Configuration/resolution/validation error, invalid overrides, evaluation error (including hook expressions), trust denied, confirmation aborted (any non-\fBy\fR answer, EOF, or interrupt), or a failed pre-run hook whose code was 1.
+.IP 2
+Command-line usage error from the argument parser (unknown option, missing argument), including a missing required \fB\-m\fR.
+.IP \fIn\fR
+The main executable's exit code. A failed pre-run hook returns that hook's code instead.
+.IP 127
+The executable was not found (post-run hooks still run).
+.IP 130
+Interrupted by the user during the main executable (post-run hooks still run).
+.RE
+.PP
+A post-run hook failure never changes the returned code. An interrupt at points other than the main executable, the confirmation prompt, or the trust prompt propagates as an uncaught \fBKeyboardInterrupt\fR; likewise, spawn failures other than "not found" (e.g. permission denied) terminate \fBmrun\fR with a Python traceback.
+.SH ENVIRONMENT PASSING
+The child process and all hooks receive \fBmrun\fR's own environment (including any \fBMRUN_*\fR variables) overlaid with the config's \fBenv\fR section; every \fBenv\fR value is stringified with \fBstr()\fR. Post-run hooks additionally receive \fBMRUN_RET\fR and \fBMRUN_OK\fR. The executable and hooks inherit \fBmrun\fR's working directory and standard input/output/error; the executable runs without a shell.
+.SH SECURITY
+Configuration files are effectively executable inputs. \fB@mrun_py\fR calls Python's \fBeval()\fR with no sandbox; expressions can reach \fBmrun\fR's module globals (including imported modules such as \fBos\fR). Hooks run arbitrary shell commands. \fB@mrun_env\fR only reads the environment and evaluates no code. CLI overrides are explicit user intent. For untrusted configurations, isolate \fBmrun\fR with \fBbwrap\fR(1), a container, or a VM.
+.SH ENVIRONMENT
+.TP
+.B MRUN_CONFIG_DIR
+Default configuration directory if \fB\-\-config\-dir\fR is absent. An empty value is ignored.
+.TP
+.B MRUN_ASSUME_TRUSTED
+If set to exactly \fB1\fR, equivalent to \fB\-\-assume\-trusted\fR.
+.TP
+.B MRUN_YES
+If set to exactly \fB1\fR, equivalent to \fB\-y\fR.
+.TP
+.B MRUN_RET, MRUN_OK
+Set by \fBmrun\fR for post_run hooks only (main exit code, stringified, and success flag).
+.SH FILES
+.TP
+.B ~/.config/mrun/trusted_configs.json
+Trust store: a JSON object mapping fully resolved file paths to \fB{ "hash", "mtime", "trusted_at" }\fR records. Created with 0600 permissions; parent directories are created as needed. Expired entries are pruned on every save; a corrupt store is ignored.
+.SH NOTES
+.RS
+.IP \(bu 2
+Long options may be abbreviated to any unambiguous prefix (standard \fBargparse\fR behavior), e.g. \fB\-\-mod\fR for \fB\-\-mode\fR.
+.IP \(bu 2
+Action precedence: \fB\-lm\fR > \fB\-lb\fR > \fB\-lo\fR (first wins, exits before \fB\-m\fR is required); \fB\-loa\fR runs after the trust gate and full evaluation, before the executable check.
+.IP \(bu 2
+Overrides are normally introduced after \fB\-\-\fR. Non-flag tokens are also captured without it, but a \fB\-\-\fRprefixed token before the separator is parsed as an \fBmrun\fR option (unknown options are usage errors, exit 2), so \fB\-\-\fR is effectively required for flag overrides.
+.IP \(bu 2
+All configuration paths used as identities (trust records, \fBoverlay_for\fR matching, duplicate detection) are fully resolved with symlinks collapsed.
+.IP \(bu 2
+Suffix handling throughout (\fB\-m\fR namespace paths, \fB\-p\fR namespace paths, includes) replaces a non-\fB.json\fR final suffix with \fB.json\fR rather than appending blindly: \fBsub/file.txt\fR resolves to \fBsub/file.json\fR.
+.RE
+.SH EXAMPLES
+.B 1. List configs:
+.RS
+.nf
+$ mrun.py -lm ; mrun.py -lb ; mrun.py -lo
+.fi
+.RE
+.PP
+.B 2. Run a mode (with/without confirmation, without timing):
+.RS
+.nf
+$ mrun.py -m ltx2_t2v
+$ mrun.py -m ltx2_t2v -y
+$ mrun.py -m ltx2_t2v -y -T
+.fi
+.RE
+.PP
+.B 3. Dry run (show raw templates, no execution):
+.RS
+.nf
+$ mrun.py -m ltx2_t2v -s
+.fi
+.RE
+.PP
+.B 4. Show resolved values and run:
+.RS
+.nf
+$ mrun.py -m ltx2_t2v -S -r
+.fi
+.RE
+.PP
+.B 5. Show both raw and resolved views, then run:
+.RS
+.nf
+$ mrun.py -m ltx2_t2v -s -S -r
+.fi
+.RE
+.PP
+.B 6. Overlay and patch together (applied in order):
+.RS
+.nf
+$ mrun.py -m ltx2_t2v -o distilled -p /tmp/steps8.json
+.fi
+.RE
+.PP
+.B 7. CLI overrides (a variable, an argument, and a positional):
+.RS
+.nf
+$ mrun.py -m ltx2_t2v -- --var width=800 --prompt "a cyberpunk city" input.png
+.fi
+.RE
+.PP
+.B 8. Dynamic expression on the CLI:
+.RS
+.nf
+$ mrun.py -m base_image -- --width @mrun_py 'val * 2'
+.fi
+.RE
+.PP
+.B 9. Inheritance with dynamic derivation:
+.RS
+.nf
+{
+"name": "half_res",
+"kind": "mode",
+"include": "base_image.json",
+"vars": {
+"width": "@mrun_py val // 2",
+"height": "@mrun_py val // 2"
+}
+}
+.fi
+.RE
+.PP
+.B 10. Hooks (shell command plus a Python reporter):
+.RS
+.nf
+{
+"name": "render_job",
+"kind": "mode",
+"executable": "/usr/bin/renderer",
+"pre_run": ["mkdir -p /tmp/render_workspace"],
+"post_run": [
+"@mrun_py print('Success!' if ok else 'Failed: ' + str(ret))",
+"rm -rf /tmp/render_workspace"
+]
+}
+.fi
+.RE
+.PP
+.B 11. Repeatable flags:
+.RS
+.nf
+{
+"name": "audio_job",
+"kind": "mode",
+"executable": "/usr/bin/audio",
+"vars": { "thing_one": "bright", "thing_two": "loud" },
+"args": {
+"@mrun_repeat --request_option": [
+"this={thing_one}",
+"that={thing_two}"
+]
+}
+}
+$ mrun.py -m audio_job
+/usr/bin/audio --request_option this=bright --request_option that=loud
+.fi
+.RE
+.PP
+.B 12. Environment-derived paths:
+.RS
+.nf
+{
+"name": "trellis_build",
+"kind": "mode",
+"vars": { "trellis_cpp_path": "@mrun_env TRELLIS_CPP /opt/trellis" },
+"executable": "{trellis_cpp_path}/bin/trellis-cli"
+}
+$ TRELLIS_CPP=$HOME/src/trellis mrun.py -m trellis_build
+.fi
+.RE
+.PP
+.B 13. Optional arguments:
+.RS
+.nf
+$ mrun.py -m encode -loa
+$ mrun.py -m encode -- --crf
+/usr/bin/encoder -i input.mp4 --crf 23
+$ mrun.py -m encode -- --verbose --crf 18
+/usr/bin/encoder -i input.mp4 --verbose --crf 18
+.fi
+.RE
+.SH "SEE ALSO"
+.BR bwrap (1),
+.BR shlex (3python),
+.BR subprocess (3python)

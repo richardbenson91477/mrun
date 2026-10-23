@@ -1,0 +1,38 @@
+#!/bin/sh
+# gen_valid: create expected mrun output snapshots.
+MRUN="../mrun.py"
+MRUN_FLAGS="-q --assume-trusted -y"
+
+cd "$(dirname "$0")" ||\
+    exit 1
+
+mkdir -p "valid_output" ||\
+    exit 1
+
+[ "$1" ] ||\
+    set -- ./conf/*.json
+
+set -u
+
+for cfg in "$@"; do
+    [ -f "$cfg" ] || {
+        echo "WARN: skipping missing file: $cfg" >&2
+        continue
+        }
+    out="valid_output/$(basename "$cfg").out"
+    {
+        rc=0
+        $MRUN $MRUN_FLAGS -m "$cfg" < /dev/null ||\
+            rc=$?
+        echo "exit=$rc"
+        } > "$out" 2>&1
+    if grep -q "Configuration '.*' not found" "$out"; then
+        echo "ERROR: mrun could not resolve '$cfg'." >&2
+        echo "       This is a test harness invocation error, not an expected failure." >&2
+        echo "       Use './conf/...' or just the stem name." >&2
+        rm -f "$out"
+        exit 1
+        fi
+    echo "wrote $out"
+    done
+

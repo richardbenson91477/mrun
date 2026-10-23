@@ -1,0 +1,11 @@
+{
+  "name": "trellis_q4",
+  "kind": "mode",
+  "description": "Trellis.cpp - Q4",
+  "include": "trellis_common.json",
+  "executable": "{_trellis_cpp_path}/bin/trellis-cli",
+  "args": {
+    "--models": "{_model_path}/trellis2_models/q4"
+  }
+}
+

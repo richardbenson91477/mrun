@@ -1,0 +1,12 @@
+{
+  "name": "test_exec",
+  "kind": "mode",
+  "executable": "./cli_test",
+  "vars": {
+  },
+  "env": {
+  },
+  "args": {
+  }
+}
+

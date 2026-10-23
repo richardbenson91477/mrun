@@ -1,0 +1,12 @@
+{
+  "name": "test_sentinels",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "args": {
+    "--true-flag": "@mrun_true",
+    "--false-flag": "@mrun_false",
+    "--agent-str": "@mrun_str:007",
+    "--number": "01234"
+  }
+}
+

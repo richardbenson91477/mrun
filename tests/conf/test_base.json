@@ -1,0 +1,16 @@
+{
+  "name": "test_base",
+  "kind": "base",
+  "executable": "/bin/echo",
+  "vars": {
+    "width": 1024,
+    "label": "base"
+  },
+  "args": {
+    "--width": "{width}",
+    "--label": "{label}",
+    "--verbose": true,
+    "--debug": false
+  }
+}
+

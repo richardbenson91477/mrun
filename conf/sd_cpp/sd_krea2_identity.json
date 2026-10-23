@@ -1,0 +1,13 @@
+{
+  "name": "sd_krea2_ident",
+  "kind": "mode",
+  "description": "SD - Krea2 - Edit (Identity)",
+  "include": "sd_krea2_common.json",
+  "args": {
+    "--cfg-scale": 1.0,
+    "--ref-image": "in.png",
+    "--output": "/tmp/k2_ident_out.png",
+    "--prompt": "The subject standing in a doorway. <lora:lora_identity_edit:1.0> {_}"
+  }
+}
+

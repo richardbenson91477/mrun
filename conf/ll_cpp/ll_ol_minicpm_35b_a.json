@@ -1,0 +1,15 @@
+{
+  "name": "ll_ol_minicpm_35b_a",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - MiniCPM-V-4.7 35B A",
+  "include": "ll_ol_qwen_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_llm/model_minicpm_35b_a",
+    "--flash-attn": "on"
+  },
+  "optional_args": {
+    "--mmproj": "{_model_path}/gguf_llm/mmproj_minicpm_35b_a"
+  }
+}
+

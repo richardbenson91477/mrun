@@ -1,0 +1,35 @@
+{
+  "name": "a_yue2",
+  "kind": "mode",
+  "description": "Audio.cpp - Yue 2",
+  "include": "audio_cpp_common.json",
+  "vars": {
+    "_lyrics": "O Canada! Our home, our native land, True patriot love thou dost in us command.  We see thee rising fair, dear land, The True North strong and free; And stand on guard, O Canada, We stand on guard for thee.",
+    "_prompt": "Modern female pop star Vocals, modern trap + dubstep",
+    "_cot": "melody",
+    "_steps": 8,
+    "_out_path": "/tmp/yue_out.wav",
+    "_guidance_scale": 1.0,
+    "_abc_temperature": 0.7,
+    "_semantic_temperature": 1.0
+  },
+  "args": {
+    "--family": "yue2",
+    "--task": "gen",
+    "--model": "{_model_path}/yue2_models/yue2-3b-q8_0.gguf",
+    "--lyrics": "{_lyrics}",
+    "--out": "{_out_path}", 
+    "@mrun_repeat --session-option": [
+        "yue2.vae_gguf=yue2-vae-f32.gguf"
+    ],
+    "@mrun_repeat --request-option": [
+        "cot={_cot}",
+        "style={_prompt}",
+        "num_inference_steps={_steps}",
+        "guidance_scale={_guidance_scale}",
+        "abc_temperature={_abc_temperature}",
+        "semantic_temperature={_semantic_temperature}"
+    ]
+  }
+}
+

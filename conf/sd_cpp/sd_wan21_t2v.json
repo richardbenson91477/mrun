@@ -1,0 +1,11 @@
+{
+  "name": "sd_wan21_t2v",
+  "kind": "mode",
+  "description": "SD - Wan 2.1 - T2V",
+  "include": "sd_wan21_common.json",
+  "args": {
+    "--output": "/tmp/wan21_t2v_out.webm",
+    "--prompt": "A woman with long brown hair and light skin smiles at another woman with long blonde hair. {_}"
+  }
+}
+

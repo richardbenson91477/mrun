@@ -1,0 +1,23 @@
+{
+  "name": "a_cosyvoice3",
+  "kind": "mode",
+  "description": "Audio.cpp - Cosyvoice 3",
+  "include": "audio_cpp_common.json",
+  "vars": {
+    "_text": "This is a local CosyVoice3 voice cloning test.",
+    "_in_voice_path": "{_model_path}/ex_data/obama1.wav",
+    "_in_voice_text": "I began writing this book shortly after the end of my presidency",
+    "_out_path": "/tmp/cosyvoice3_out.wav"
+  },
+  "args": {
+    "--family": "cosyvoice3",
+    "--task": "clon",
+    "--model": "{_model_path}/cosyvoice3_models/cosyvoice3-q8_0.gguf",
+    "--text": "{_text}",
+    "--voice-ref": "{_in_voice_path}",
+    "--reference-text": "{_in_voice_text}",
+    "--out": "{_out_path}",
+    "--request-option": "template_name=zero_shot"
+  }
+}
+

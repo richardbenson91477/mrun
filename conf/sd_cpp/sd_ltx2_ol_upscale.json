@@ -1,0 +1,13 @@
+{
+  "name": "sd_ltx2_ol_upscale",
+  "kind": "overlay",
+  "overlay_for": ["sd_ltx2_common.json"],
+  "description": "SD - LTX2 - Overlay - Upscale",
+  "args": {
+    "--hires": true,
+    "--hires-upscalers-dir": "{_model_path}/ltx2_models",
+    "--hires-upscaler": "ltx-2.3-spatial-upscaler-x2-1.1",
+    "--hires-steps": 4
+  }
+}
+

@@ -1,0 +1,29 @@
+{
+  "name": "a_ace_step_common",
+  "kind": "base",
+  "description": "Audio.cpp - Ace Step (Common)",
+  "include": "audio_cpp_common.json",
+  "vars": {
+    "_steps": 8,
+    "_out_path": "/tmp/ace_step_out.wav"
+  },
+  "args": {
+    "--family": "ace_step",
+    "--task": "gen",
+    "--model": "{_model_path}/ace_step_models/ace-step-1.5-turbo-q8_0.gguf",
+    "--num-inference-steps": "{_steps}",
+    "--out": "{_out_path}"
+  },
+  "optional_args": {
+    "--duration-seconds": 60,
+    "--guidance-scale": 1.0,
+    "@mrun_repeat --request-option": [
+      "bpm=120",
+      "negative_prompt='atonal'",
+      "lm_temperature=0.85",
+      "lm_cfg_scale=2.0",
+      "track_name=vocals"
+    ]
+  }
+}
+

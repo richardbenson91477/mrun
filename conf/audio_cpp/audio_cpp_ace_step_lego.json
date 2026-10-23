@@ -1,0 +1,16 @@
+{
+  "name": "a_ace_step_lego",
+  "kind": "mode",
+  "description": "Audio.cpp - Ace Step - Lego",
+  "include": "audio_cpp_ace_step_common.json",
+  "vars": {
+    "_prompt": "generate a softer vocal layer",
+    "_in_path": "in.wav"
+  },
+  "args": {
+    "--task-route": "lego",
+    "--text": "{_prompt}",
+    "--audio": "{_in_path}"
+  }
+}
+

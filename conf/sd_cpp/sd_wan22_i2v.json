@@ -1,0 +1,14 @@
+{
+  "name": "sd_wan22_i2v",
+  "kind": "mode",
+  "description": "SD - Wan 2.2 - I2V",
+  "include": "sd_wan22_common.json",
+  "args": {
+    "--init-img": "in.png",
+    "--output": "/tmp/wan22_i2v_out.webm",
+    "--prompt": "The scene continues as expected. {_}",
+    "--width": 512,
+    "--height": 512
+  }
+}
+

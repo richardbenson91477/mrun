@@ -1,0 +1,12 @@
+{
+  "name": "sd_zimage",
+  "kind": "mode",
+  "description": "SD - ZImage - Gen",
+  "include": "sd_zimage_common.json",
+  "args": {
+    "--cfg-scale": 1.0,
+    "--output": "/tmp/zimage_out.png",
+    "--prompt": "A beautiful young woman standing in a doorway."
+  }
+}
+

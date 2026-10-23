@@ -1,0 +1,13 @@
+{
+  "name": "test_child",
+  "kind": "mode",
+  "include": "test_base.json",
+  "vars": {
+    "width": "@mrun_py val * 2",
+    "label": "child"
+  },
+  "args": {
+    "--half-width": "@mrun_py vars['width'] // 2"
+  }
+}
+

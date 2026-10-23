@@ -1,0 +1,10 @@
+{
+  "name": "sd_f2k",
+  "kind": "mode",
+  "description": "SD - Flux.2 Klein 9B - Gen",
+  "include": "sd_f2k_common.json",
+  "args": {
+    "--output": "/tmp/f2k_out.png",
+    "--prompt": "A cute pink bunny in a forest, close-up."
+  }
+}

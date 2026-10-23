@@ -1,0 +1,11 @@
+{
+  "name": "ll_cnv_q35",
+  "kind": "mode",
+  "description": "Llama.cpp - Cnv - Qwen 3.6 35B (dflash)",
+  "include": [
+    "ll_cnv",
+    "ll_ol_qwen3_6_35b",
+    "ll_ol_qwen3_6_35b_dflash"
+  ]
+}
+

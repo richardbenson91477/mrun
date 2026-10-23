@@ -1,0 +1,23 @@
+{
+  "name": "sd_qi2_common",
+  "kind": "base",
+  "description": "SD - Qwen Image 2 (Common)",
+  "include": "sd_common.json",
+  "vars": {
+    "_": ""
+  },
+  "args": {
+    "--diffusion-model": "{_model_path}/qi2_models/model_qi2_turbo",
+    "--vae": "{_model_path}/qi2_models/vae_qi2",
+    "--llm": "{_model_path}/qi2_models/llm_qi2",
+    "--llm_vision": "{_model_path}/qi2_models/mmproj_qi2",
+    "--lora-model-dir": "{_model_path}/qi2_lora",
+    "--cfg-scale": 1.0,
+    "--flow-shift": 3,
+    "--sampling-method": "euler",
+    "--steps": 8,
+    "--width": 512,
+    "--height": 512
+  }
+}
+

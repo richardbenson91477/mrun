@@ -1,0 +1,11 @@
+{
+  "name": "sd_krea2_halfres",
+  "kind": "mode",
+  "description": "SD - Krea2 - Gen (Half Res)",
+  "include": "sd_krea2.json",
+  "args": {
+    "--width": "@mrun_py val / 2",
+    "--height": "@mrun_py val / 2"
+  }
+}
+

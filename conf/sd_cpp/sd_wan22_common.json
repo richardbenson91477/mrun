@@ -1,0 +1,12 @@
+{
+  "name": "sd_wan22_common",
+  "kind": "base",
+  "description": "SD - Wan 2.2 (Common)",
+  "include": "sd_wan_common.json",
+  "args": {
+    "--diffusion-model": "{_model_path}/wan22_models/Wan2.2-TI2V-5B-Q8_0.gguf",
+    "--vae": "{_model_path}/wan22_models/wan2.2_vae.safetensors",
+    "--lora-model-dir": "{_model_path}/wan22_lora"
+  }
+}
+

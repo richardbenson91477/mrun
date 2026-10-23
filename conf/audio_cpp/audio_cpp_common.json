@@ -1,0 +1,18 @@
+{
+  "name": "audio_cpp_common",
+  "kind": "base",
+  "description": "Audio.cpp (Common)",
+  "vars": {
+    "_audio_cpp_path": "@mrun_env mrun_audio_cpp_path",
+    "_model_path": "@mrun_env lena_model_path",
+    "_threads": "@mrun_env lena_model_threads"
+  },
+  "executable": "{_audio_cpp_path}/bin/audiocpp_cli",
+  "args": {
+    "--backend": "vulkan",
+    "--threads": "{_threads}",
+    "--seed": 85,
+    "--log": true
+  }
+}
+

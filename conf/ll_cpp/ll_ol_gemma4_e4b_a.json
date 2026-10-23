@@ -1,0 +1,16 @@
+{
+  "name": "ll_ol_gemma4_e4b_a",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - Gemma 4 E4B A",
+  "include": "ll_ol_gemma_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_llm/model_gemma4_e4b_a",
+    "--spec-type": "draft-mtp",
+    "--spec-draft-model": "{_model_path}/gguf_llm/mtp_gemma4_e4b"
+  },
+  "optional_args": {
+    "--mmproj": "{_model_path}/gguf_llm/mmproj_gemma4_e4b_a"
+  }
+}
+

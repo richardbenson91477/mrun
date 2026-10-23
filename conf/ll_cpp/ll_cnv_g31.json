@@ -1,0 +1,10 @@
+{
+  "name": "ll_cnv_g31",
+  "kind": "mode",
+  "description": "Llama.cpp - Cnv - Gemma 4 31B A",
+  "include": [
+    "ll_cnv",
+    "ll_ol_gemma4_31b_a"
+  ]
+}
+

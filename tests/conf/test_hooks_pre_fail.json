@@ -1,0 +1,17 @@
+{
+  "name": "test_hooks_pre_fail",
+  "kind": "mode",
+  "executable": "/bin/sh",
+  "env": {
+  },
+  "args": {
+    "-c": "echo main should not run" 
+  },
+  "pre_run": [
+    "false"
+  ],
+  "post_run": [
+    "echo post should not run"
+  ]
+}
+

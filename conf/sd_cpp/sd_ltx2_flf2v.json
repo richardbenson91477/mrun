@@ -1,0 +1,13 @@
+{
+  "name": "sd_ltx2_flf2v",
+  "kind": "mode",
+  "description": "SD - LTX2 - FLF2V",
+  "include": "sd_ltx2_common.json",
+  "args": {
+    "--init-img": "in_first.png",
+    "--end-img": "in_last.png",
+    "--output": "/tmp/ltx2_flf2v_out.webm",
+    "--prompt": "a woman rotates (head in view) {_}"
+  }
+}
+

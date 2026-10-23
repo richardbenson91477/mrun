@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "fake-cli started"
+echo "ARGS: $*"
+echo "TEST_VAR=${TEST_VAR:-}"
+
+exit "${FAKE_EXIT:-0}"
+

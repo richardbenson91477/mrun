@@ -1,0 +1,10 @@
+{
+  "name": "a_vibevoice",
+  "kind": "mode",
+  "description": "Audio.cpp - Vibevoice",
+  "include": "audio_cpp_vibevoice_common.json",
+  "args": {
+    "--model": "{_model_path}/vibevoice_models/vibevoice-1.5b-q8_0.gguf"
+  }
+}
+

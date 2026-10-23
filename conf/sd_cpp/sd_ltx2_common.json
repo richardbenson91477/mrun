@@ -1,0 +1,27 @@
+{
+  "name": "sd_ltx2_common",
+  "kind": "base",
+  "description": "SD - LTX2 (Common)",
+  "include": "sd_common.json",
+  "vars": {
+    "_": "<lora:lora_4s:1.0>"
+  },
+  "args": {
+    "--mode": "vid_gen",
+    "--diffusion-model": "{_model_path}/ltx2_models/ltx-2.3-22b-dev-Q6_K.gguf",
+    "--vae": "{_model_path}/ltx2_models/ltx-2.3-22b-dev_video_vae.safetensors",
+    "--embeddings-connectors": "{_model_path}/ltx2_models/ltx-2.3-22b-dev_embeddings_connectors.safetensors",
+    "--llm": "{_model_path}/ltx2_models/gemma-3-12b-it-ultra-uncensored-heretic-Q6_K.gguf",
+    "--lora-model-dir": "{_model_path}/ltx2_lora",
+    "--cfg-scale": 1.0,
+    "--sampling-method": "euler",
+    "--steps": 4,
+    "--width": 480,
+    "--height": 480,
+    "--video-frames": 41,
+    "--fps": 15.0,
+    "--negative-prompt": "worst quality, low quality, blurry, distorted, artifacts",
+    "--diffusion-fa": true
+  }
+}
+

@@ -1,0 +1,20 @@
+{
+  "name": "whisper",
+  "kind": "mode",
+  "description": "Whisper.cpp",
+  "vars": {
+    "_whisper_cpp_path": "@mrun_env mrun_whisper_cpp_path",
+    "_model_path": "@mrun_env lena_model_path",
+    "_threads": "@mrun_env lena_model_threads"
+  },
+  "env": {
+    "LD_LIBRARY_PATH": "{_whisper_cpp_path}/lib64"
+  },
+  "executable": "{_whisper_cpp_path}/bin/whisper-cli",
+  "args": {
+    "--model": "{_model_path}/whisper_models/model_large-turbo",
+    "--threads": "{_threads}",
+    "--file": "in.wav"
+  }
+}
+

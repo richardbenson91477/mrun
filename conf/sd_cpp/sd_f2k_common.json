@@ -1,0 +1,18 @@
+{
+  "name": "sd_f2k_common",
+  "kind": "base",
+  "description": "SD - Flux.2 Klein 9B (Common)",
+  "include": "sd_common.json",
+  "args": {
+    "--diffusion-model": "{_model_path}/f2k_models/model_f2k",
+    "--vae": "{_model_path}/f2k_models/vae_f2k",
+    "--llm": "{_model_path}/f2k_models/llm_f2k",
+    "--lora-model-dir": "{_model_path}/f2k_lora",
+    "--cfg-scale": 1.0,
+    "--sampling-method": "euler",
+    "--steps": 4,
+    "--width": 512,
+    "--height": 512,
+    "--negative-prompt": " "
+  }
+}

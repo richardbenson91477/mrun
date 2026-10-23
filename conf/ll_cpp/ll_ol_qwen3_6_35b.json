@@ -1,0 +1,16 @@
+{
+  "name": "ll_ol_qwen3_6_35b",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - Qwen 3.6 35B",
+  "include": "ll_ol_qwen_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_llm/model_qwen3_6_35b",
+    "--spec-type": "draft-mtp",
+    "--flash-attn": "on"
+  },
+  "optional_args": {
+    "--mmproj": "{_model_path}/gguf_llm/mmproj_qwen3_6_35b"
+  }
+}
+

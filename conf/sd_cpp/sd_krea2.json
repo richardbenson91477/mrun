@@ -1,0 +1,12 @@
+{
+  "name": "sd_krea2",
+  "kind": "mode",
+  "description": "SD - Krea2 - Gen",
+  "include": "sd_krea2_common.json",
+  "args": {
+    "--cfg-scale": 1.0,
+    "--output": "/tmp/k2_out.png",
+    "--prompt": "A female standing in a doorway. {_}"
+  }
+}
+

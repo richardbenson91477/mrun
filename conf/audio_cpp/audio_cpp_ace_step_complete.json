@@ -1,0 +1,16 @@
+{
+  "name": "a_ace_step_complete",
+  "kind": "mode",
+  "description": "Audio.cpp - Ace Step - Complete",
+  "include": "audio_cpp_ace_step_common.json",
+  "vars": {
+    "_prompt": "Complete this track",
+    "_in_path": "in.wav"
+  },
+  "args": {
+    "--task-route": "complete",
+    "--text": "{_prompt}",
+    "--audio": "{_in_path}"
+  }
+}
+

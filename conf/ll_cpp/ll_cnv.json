@@ -1,0 +1,16 @@
+{
+  "name": "ll_cnv",
+  "kind": "mode",
+  "description": "Llama.cpp - Cnv",
+  "include": "ll_common.json",
+  "env": {
+    "LD_LIBRARY_PATH": "{_llama_cpp_path}/lib64"
+  },
+  "executable": "{_llama_cpp_path}/bin/llama-cli",
+  "args": {
+    "--log-disable": true,
+    "--simple-io": true,
+    "--color": "off"
+  }
+}
+

@@ -1,0 +1,23 @@
+{
+  "name": "trellis_common",
+  "kind": "base",
+  "description": "Trellis.cpp (Common)",
+  "vars": {
+    "_trellis_cpp_path": "@mrun_env mrun_trellis_cpp_path",
+    "_model_path": "@mrun_env lena_model_path"
+  },
+  "env": {
+    "LD_LIBRARY_PATH": "{_trellis_cpp_path}/lib64"
+  },
+  "executable": "{_trellis_cpp_path}/bin/trellis-cli",
+  "args": {
+    "--seed": 86,
+    "--image": "in.png",
+    "--output": "/tmp/trellis_q4_out.glb",
+    "--res": 512,
+    "--bg-removal": "threshold",
+    "--no-texture": true,
+    "--gpu": 0
+  }
+}
+

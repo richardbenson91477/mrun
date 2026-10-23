@@ -1,0 +1,11 @@
+{
+  "name": "ll_srv_glimmer",
+  "kind": "mode",
+  "description": "Llama.cpp - Srv - Muse Glimmer 30B (dflash)",
+  "include": [
+    "ll_srv",
+    "ll_ol_glimmer_30b_a.json",
+    "ll_ol_glimmer_30b_dflash.json"
+  ]
+}
+

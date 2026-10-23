@@ -1,0 +1,16 @@
+{
+  "name": "a_ace_step_extract",
+  "kind": "mode",
+  "description": "Audio.cpp - Ace Step - Extract",
+  "include": "audio_cpp_ace_step_common.json",
+  "vars": {
+    "_prompt": "extract vocals",
+    "_in_path": "in.wav"
+  },
+  "args": {
+    "--task-route": "extract",
+    "--text": "{_prompt}",
+    "--audio": "{_in_path}"
+  }
+}
+

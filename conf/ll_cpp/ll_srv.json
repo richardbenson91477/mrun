@@ -1,0 +1,19 @@
+{
+  "name": "ll_srv",
+  "kind": "mode",
+  "description": "Llama.cpp - Srv",
+  "include": "ll_common.json",
+  "env": {
+    "LD_LIBRARY_PATH": "{_llama_cpp_path}/lib64"
+  },
+  "executable": "{_llama_cpp_path}/bin/llama-server",
+  "args": {
+    "--no-ui": true,
+    "--cache-prompt": true,
+    "--cache-reuse": 4,
+    "--host": "localhost",
+    "--port": "8080",
+    "--log-file": "/tmp/ll_srv.log"
+  }
+}
+

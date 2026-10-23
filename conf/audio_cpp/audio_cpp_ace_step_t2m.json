@@ -1,0 +1,16 @@
+{
+  "name": "a_ace_step_t2m",
+  "kind": "mode",
+  "description": "Audio.cpp - Ace Step - T2M",
+  "include": "audio_cpp_ace_step_common.json",
+  "vars": {
+    "_lyrics": "O Canada! Our home, our native land, True patriot love thou dost in us command.  We see thee rising fair, dear land, The True North strong and free; And stand on guard, O Canada, We stand on guard for thee.",
+    "_prompt": "Trap and Dubstep style with female pop singer vocals"
+  },
+  "args": {
+    "--task-route": "text2music",
+    "--lyrics": "{_lyrics}", 
+    "--text": "{_prompt}"
+  }
+}
+

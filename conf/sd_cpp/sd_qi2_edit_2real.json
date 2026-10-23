@@ -1,0 +1,12 @@
+{
+  "name": "sd_qi2_edit_2real",
+  "kind": "mode",
+  "description": "SD - Qwen Image 2 - Edit (2Real)",
+  "include": "sd_qi2_common.json",
+  "args": {
+    "--ref-image": "in.png",
+    "--output": "/tmp/qi2_edit_2real_out.png",
+    "--prompt": "transform the image to realistic photograph. <lora:lora_anything2real_char:0.8> {_}"
+  }
+}
+

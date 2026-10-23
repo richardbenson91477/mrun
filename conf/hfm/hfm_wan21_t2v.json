@@ -1,0 +1,11 @@
+{
+  "name": "hfm_wan21_t2v",
+  "kind": "mode",
+  "description": "HFM - Wan 2.1 TI2V - T2V",
+  "include": "hfm_wan21_common.json",
+  "args": {
+    "--out_video_path": "/tmp/wan21_t2v_out.mp4",
+    "--prompt": "A woman with long brown hair and light skin smiles at another woman with long blonde hair."
+  }
+}
+

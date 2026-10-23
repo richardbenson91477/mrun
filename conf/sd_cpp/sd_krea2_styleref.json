@@ -1,0 +1,13 @@
+{
+  "name": "sd_krea2_styleref",
+  "kind": "mode",
+  "description": "SD - Krea2 - Edit (Style Reference)",
+  "include": "sd_krea2_common.json",
+  "args": {
+    "--cfg-scale": 1.0,
+    "--ref-image": "in.png",
+    "--output": "/tmp/k2_styleref_out.png",
+    "--prompt": "A female standing in a doorway. <lora:lora_style_reference:0.8> {_}"
+  }
+}
+

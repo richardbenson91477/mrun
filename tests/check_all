@@ -1,0 +1,27 @@
+#!/bin/sh
+# check_all: run check_one for every ./conf/*.json and tally results.
+
+set -u
+
+cd "$(dirname "$0")" ||\
+  exit 1
+
+pass=0
+fail=0
+
+for cfg in ./conf/*.json; do
+    [ -f "$cfg" ] ||\
+      continue
+
+    if ./check_one "$cfg"; then
+        pass=$((pass + 1))
+      else
+        fail=$((fail + 1))
+      fi
+    done
+
+echo
+echo "pass=$pass fail=$fail"
+
+[ "$fail" -eq 0 ]
+

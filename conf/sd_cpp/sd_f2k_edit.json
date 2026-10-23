@@ -1,0 +1,11 @@
+{
+  "name": "sd_f2k_edit",
+  "kind": "mode",
+  "description": "SD - Flux.2 Klein 9B - Edit",
+  "include": "sd_f2k_common.json",
+  "args": {
+    "--ref-image": "in.png",
+    "--output": "/tmp/f2k_edit_out.png",
+    "--prompt": "Place some colourful easter eggs in front of the bunny."
+  }
+}

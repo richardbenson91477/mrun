@@ -1,0 +1,10 @@
+{
+  "name": "ll_srv_g31",
+  "kind": "mode",
+  "description": "Llama.cpp - Srv - Gemma 4 31B A",
+  "include": [
+    "ll_srv",
+    "ll_ol_gemma4_31b_a"
+  ]
+}
+

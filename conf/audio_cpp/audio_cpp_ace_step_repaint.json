@@ -1,0 +1,20 @@
+{
+  "name": "a_ace_step_repaint",
+  "kind": "mode",
+  "description": "Audio.cpp - Ace Step - Repaint",
+  "include": "audio_cpp_ace_step_common.json",
+  "vars": {
+    "_prompt": "replace the middle with a brighter chorus",
+    "_in_path": "in.wav",
+    "_start": 20,
+    "_end": 35
+  },
+  "args": {
+    "--task-route": "repaint",
+    "--text": "{_prompt}",
+    "--audio": "{_in_path}",
+    "--repaint-start": "{_start}",
+    "--repaint-end": "{_end}"
+  }
+}
+

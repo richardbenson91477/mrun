@@ -1,0 +1,20 @@
+{
+  "name": "sd_common",
+  "kind": "base",
+  "description": "Stable Diffusion .cpp (Common)",
+  "vars": {
+    "_model_path": "@mrun_env lena_model_path",
+    "_sd_cpp_path": "@mrun_env mrun_sd_cpp_path"
+  },
+  "env": {
+    "LD_LIBRARY_PATH": "{_sd_cpp_path}/lib64"
+  },
+  "executable": "{_sd_cpp_path}/bin/sd-cli",
+  "args": {
+    "--seed": 86,
+    "--verbose": true,
+    "--offload-to-cpu": true,
+    "--max-vram": 32,
+    "--mmap": true
+  }
+}

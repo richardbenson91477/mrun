@@ -1,0 +1,24 @@
+{
+  "name": "sd_wan_common",
+  "kind": "base",
+  "description": "SD - Wan (Common)",
+  "include": "sd_common.json",
+  "vars": {
+    "_": "<lora:lora_4s:1.0>"
+  },
+  "args": {
+    "--mode": "vid_gen",
+    "--t5xxl": "{_model_path}/wan22_models/umt5-xxl-encoder-Q6_K.gguf",
+    "--cfg-scale": 1.0,
+    "--sampling-method": "euler",
+    "--flow-shift": 3.0,
+    "--steps": 4,
+    "--width": 640,
+    "--height": 480,
+    "--video-frames": 41,
+    "--fps": 15.0,
+    "--negative-prompt": "worst quality, low quality, blurry, distorted, artifacts",
+    "--diffusion-fa": true
+  }
+}
+

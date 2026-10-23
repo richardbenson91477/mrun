@@ -1,0 +1,23 @@
+{
+  "name": "sd_flf2v_pipeline",
+  "kind": "mode",
+  "description": "Pipeline: Moss Image -> QI2 Edit -> LTX2 FLF2V",
+  "executable": "./workflows/sd_flf2v_pipeline.sh",
+  "vars": {
+    "_prompt_base": "a lovely cat holding a blank wooden sign in a forest",
+    "_prompt_edit": "add the text 'HELLO WORLD' clearly on the wooden sign",
+    "_prompt_vid": "the cat waves its paw, smooth cinematic motion",
+    "_base_img": "/tmp/pipeline_base.png",
+    "_edit_img": "/tmp/pipeline_edited.png",
+    "_final_vid": "/tmp/pipeline_final.webm"
+  },
+  "env": {
+    "PROMPT_BASE": "{_prompt_base}",
+    "PROMPT_EDIT": "{_prompt_edit}",
+    "PROMPT_VID": "{_prompt_vid}",
+    "BASE_IMG": "{_base_img}",
+    "EDIT_IMG": "{_edit_img}",
+    "FINAL_VID": "{_final_vid}"
+  },
+  "args": {}
+}

@@ -1,0 +1,39 @@
+{
+  "name": "ll_common",
+  "kind": "base",
+  "description": "Llama.cpp (Common)",
+  "vars": {
+    "_llama_cpp_path": "@mrun_env mrun_llama_cpp_path",
+    "_model_path": "@mrun_env lena_model_path",
+    "_threads": "@mrun_env lena_model_threads"
+  },
+  "args": {
+    "--threads": "{_threads}",
+    "--load-mode": "auto",
+    "--fit": "off",
+    "--no-repack": true,
+    "--flash-attn": "off",
+    "--cache-type-k": "bf16",
+    "--cache-type-v": "bf16",
+    "--parallel": 1,
+    "--seed": 86,
+    "--ctx-size": 32768,
+    "--frequency-penalty": 0.0,
+    "--min-p": 0.0,
+    "--presence-penalty": 0.0,
+    "--repeat-penalty": 1.0,
+    "--repeat-last-n": 64,
+    "--samplers": "penalties;top_k;top_p;min_p;temperature;",
+    "--temp": 0.7,
+    "--top-k": 20,
+    "--top-p": 0.95,
+    "--reasoning": "on",
+    "--reasoning-budget": -1,
+    "--reasoning-budget-message": ". OK, I think I have finished thinking.",
+    "--reasoning-effort": "medium",
+    "--spec-type": "none",
+    "--spec-draft-n-min": 1,
+    "--spec-draft-n-max": 3
+  }
+}
+
