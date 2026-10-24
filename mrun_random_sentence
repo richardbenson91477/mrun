@@ -1,8 +1,5 @@
 #!/bin/sh
 
-mrun -m "ll_sentence_gen" -y \
-  -- \
-    --var _prompt_term1="$(random_word)" \
-    --var _prompt_term2="$(random_word)" \
-    --var _prompt_term3="$(random_word)"
+mrun -m "ll_sentence_gen" -y -- \
+  --var _prompt_terms="@mrun_list $(random_word) $(random_word) $(random_word)"
 
