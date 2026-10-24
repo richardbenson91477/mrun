@@ -1,0 +1,12 @@
+{
+  "name": "ll_ol_spark_4b_a",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - Spark 4B A",
+  "include": "ll_ol_qwen_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_llm/model_spark_4b_a",
+    "--reasoning-effort": "high"
+  }
+}
+
