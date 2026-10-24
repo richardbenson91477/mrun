@@ -1,4 +1,2 @@
 --int 42 --float 3.14 --sci 1000.0 --verb 7 --t true --f false
-
-Execution time: 00:00 (0.0s)
 exit=0

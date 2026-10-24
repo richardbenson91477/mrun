@@ -22,3 +22,4 @@ echo "pass=$pass  fail=$fail"
 echo "=============================="
 
 [ "$fail" -eq 0 ]
+
