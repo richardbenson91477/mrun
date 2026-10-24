@@ -11,7 +11,7 @@
     }
 
 
-random_words=$(zstdcat $mrun_path/etc/words.zst |
+random_words=$(zstdcat "$mrun_path/etc/words.zst" |
       shuf |
       head -n "$nw"
       )
