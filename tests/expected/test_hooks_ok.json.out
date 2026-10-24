@@ -1,0 +1,6 @@
+pre ran
+main ran
+post ran ret=0 ok=true
+
+Execution time: 00:00 (0.0s)
+exit=0

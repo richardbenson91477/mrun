@@ -1,0 +1,2 @@
+[ERROR] Configuration './conf/test_diamond_right.json' is not a mode ('kind' must be 'mode')
+exit=1

@@ -1,0 +1,12 @@
+{
+  "name": "test_repeat_args",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "args": {
+    "@mrun_repeat --tag": ["alpha", "beta"],
+    "--normal-list": ["one", "two"]
+  },
+  "optional_args": {
+    "@mrun_repeat --opt-tag": ["x", "y"]
+  }
+}

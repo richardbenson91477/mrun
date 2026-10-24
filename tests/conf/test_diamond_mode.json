@@ -1,0 +1,6 @@
+{
+  "name": "test_diamond_mode",
+  "kind": "mode",
+  "include": ["test_diamond_left.json", "test_diamond_right.json"],
+  "args": {"--from-mode": "{v}"}
+}

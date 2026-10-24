@@ -1,0 +1,7 @@
+{
+  "name": "test_diamond_base",
+  "kind": "base",
+  "executable": "/bin/echo",
+  "vars": {"v": "base"},
+  "args": {"--from-base": "{v}"}
+}

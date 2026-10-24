@@ -1,0 +1,8 @@
+{
+  "name": "test_hooks_string",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "args": {"--msg": "main"},
+  "pre_run": "echo 'single string pre'",
+  "post_run": "echo 'single string post'"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "test_type_coercion",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "vars": {
+    "int_str": "42",
+    "float_str": "3.14",
+    "sci_str": "1e3",
+    "verbatim": "@mrun_str:007",
+    "bool_true": "@mrun_true",
+    "bool_false": "@mrun_false"
+  },
+  "args": {
+    "--int": "{int_str}",
+    "--float": "{float_str}",
+    "--sci": "{sci_str}",
+    "--verb": "{verbatim}",
+    "--t": "{bool_true}",
+    "--f": "{bool_false}"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "test_py_context",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "vars": {
+    "my_var": "hello_world",
+    "var_len": "@mrun_py len(vars['my_var'])",
+    "math_pi": "@mrun_py round(math.pi, 2)"
+  },
+  "args": {
+    "--flag": "test",
+    "has_flag": "@mrun_py '--flag' in args",
+    "--len": "{var_len}",
+    "--pi": "{math_pi}"
+  }
+}

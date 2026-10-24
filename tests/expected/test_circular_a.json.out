@@ -1,0 +1,2 @@
+[ERROR] Circular include detected: /home/shared/prog/mrun/tests/conf/test_circular_a.json -> /home/shared/prog/mrun/tests/conf/test_circular_b.json -> /home/shared/prog/mrun/tests/conf/test_circular_a.json
+exit=1

@@ -1,0 +1,2 @@
+[ERROR] Configuration './conf/test_overlay_apply.json' is not a mode ('kind' must be 'mode')
+exit=1

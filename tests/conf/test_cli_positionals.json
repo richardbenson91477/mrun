@@ -1,0 +1,6 @@
+{
+  "name": "test_cli_positionals",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "args": {"--flag": "val"}
+}

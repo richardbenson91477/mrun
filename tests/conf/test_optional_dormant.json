@@ -1,0 +1,14 @@
+{
+  "name": "test_optional_dormant",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "args": {
+    "--main": "active"
+  },
+  "optional_args": {
+    "--opt-bool": true,
+    "--opt-val": 42,
+    "--opt-null": null,
+    "@mrun_repeat --opt-list": ["a", "b"]
+  }
+}

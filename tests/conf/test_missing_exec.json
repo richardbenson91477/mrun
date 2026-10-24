@@ -1,0 +1,5 @@
+{
+  "name": "test_missing_exec",
+  "kind": "mode",
+  "args": {"--foo": "bar"}
+}

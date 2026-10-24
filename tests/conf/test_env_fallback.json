@@ -1,0 +1,15 @@
+{
+  "name": "test_env_fallback",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "vars": {
+    "present_var": "@mrun_env PATH",
+    "missing_with_default": "@mrun_env MRUN_NONEXISTENT_123 fallback_value",
+    "missing_empty_default": "@mrun_env MRUN_NONEXISTENT_456 "
+  },
+  "args": {
+    "--present": "{present_var}",
+    "--default": "{missing_with_default}",
+    "--empty": "{missing_empty_default}"
+  }
+}

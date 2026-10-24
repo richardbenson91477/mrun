@@ -1,0 +1,11 @@
+{
+  "name": "test_env_section",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "vars": {"my_path": "/tmp"},
+  "env": {
+    "MY_CUSTOM_ENV": "{my_path}/bin",
+    "STATIC_ENV": "hello"
+  },
+  "args": {"--msg": "env test"}
+}

@@ -1,0 +1,4 @@
+--width 2048 --label child --verbose --half-width 1024
+
+Execution time: 00:00 (0.0s)
+exit=0

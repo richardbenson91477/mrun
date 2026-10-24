@@ -1,0 +1,15 @@
+{
+  "name": "test_hooks_logic",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "args": {"--msg": "main"},
+  "pre_run": [
+    "@mrun_py None",
+    "echo 'pre_shell'",
+    "@mrun_py 0"
+  ],
+  "post_run": [
+    "@mrun_py 'skip' if not ok else None",
+    "echo 'post_shell ret=$MRUN_RET ok=$MRUN_OK'"
+  ]
+}

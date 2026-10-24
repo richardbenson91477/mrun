@@ -1,0 +1,7 @@
+{
+  "name": "test_overlay_target",
+  "kind": "mode",
+  "executable": "/bin/echo",
+  "vars": {"theme": "default"},
+  "args": {"--theme": "{theme}"}
+}

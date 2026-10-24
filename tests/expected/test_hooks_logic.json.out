@@ -1,0 +1,6 @@
+pre_shell
+--msg main
+post_shell ret=$MRUN_RET ok=$MRUN_OK
+
+Execution time: 00:00 (0.0s)
+exit=0

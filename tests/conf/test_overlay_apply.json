@@ -1,0 +1,7 @@
+{
+  "name": "test_overlay_apply",
+  "kind": "overlay",
+  "overlay_for": ["test_overlay_target"],
+  "vars": {"theme": "dark"},
+  "args": {"--extra": "yes"}
+}

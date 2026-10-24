@@ -1,0 +1,7 @@
+{
+  "name": "test_diamond_left",
+  "kind": "base",
+  "include": "test_diamond_base.json",
+  "vars": {"v": "left"},
+  "args": {"--from-left": "{v}"}
+}
