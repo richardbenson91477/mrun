@@ -1,10 +1,14 @@
 #!/bin/sh
 
 num_words_default=3
+words_path_default="$mrun_path/etc/words.zst"
 out_path_default="/tmp/mrun_random_sentence.out"
 
 [ "$num_words" ] ||\
   num_words="$num_words_default"
+
+[ "$words_path" ] ||\
+  words_path="$words_path_default"
 
 [ "$out_path" ] ||\
   out_path="$out_path_default"
@@ -14,13 +18,14 @@ out_path_default="/tmp/mrun_random_sentence.out"
     echo "usage: $0 [mrun extra args]"
     echo "env:"
     echo "  num_words: number of random words to generate (current: ${num_words})"
+    echo "  words_path: path to zstd compressed words list (current: \"${words_path}\")"
     echo "  out_path: path to save generated response (current: \"${out_path}\")"
     exit 1
     }
 
 
 generate_random_words () {
-    random_words=$(zstdcat "$mrun_path/etc/words.zst" |
+    random_words=$(zstdcat "$words_path" |
           shuf |
           head -n "$num_words"
           )

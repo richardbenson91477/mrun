@@ -6,7 +6,7 @@ prompt="${_mrun_prompt_head} ${_mrun_prompt_terms}. ${_mrun_prompt_tail}"
 tmp_log_path="$(mktemp)"
 
 
-mrun.py -m ll_cnv -y \
+mrun.py -m "ll_cnv" -y \
   -o "$_mrun_model_ol" -- \
     --prompt "$prompt" \
     --ctx-size "$_mrun_ctx_size" \
@@ -15,7 +15,7 @@ mrun.py -m ll_cnv -y \
     "$@" | tee "$tmp_log_path"
 
 
-echo "$0: full ll_cnv output copied to \"$tmp_log_path\""
+echo "$0: full \"ll_cnv\" output copied to \"$tmp_log_path\""
 
 
 [ "$_mrun_out_path" != "/dev/null" ] && {
