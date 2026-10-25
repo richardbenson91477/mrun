@@ -32,20 +32,20 @@ generate_random_words () {
     }
 
 
-generate_random_words
-
 if [ "$1" != "-y" ]; then
     confirm="n"
     while [ "$confirm" = "n" ]; do
+        generate_random_words
+
         echo -n "$(basename $0): use random words: $(echo -n ${random_words})"
         read -p "$@? (y/n/q): " confirm
         [ "$confirm" = "q" ] &&\
           exit 2
 
-        generate_random_words
         done
 
   else
+    generate_random_words
     shift
     fi
 
