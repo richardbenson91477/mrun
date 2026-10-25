@@ -16,7 +16,7 @@
     "--cache-type-k": "bf16",
     "--cache-type-v": "bf16",
     "--parallel": 1,
-    "--seed": 86,
+    "--seed": -1,
     "--ctx-size": 32768,
     "--frequency-penalty": 0.0,
     "--min-p": 0.0,
