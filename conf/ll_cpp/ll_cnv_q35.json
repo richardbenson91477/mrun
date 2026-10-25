@@ -3,9 +3,9 @@
   "kind": "mode",
   "description": "Llama.cpp - Cnv - Qwen 3.6 35B (dflash)",
   "include": [
-    "ll_cnv",
-    "ll_ol_qwen3_6_35b",
-    "ll_ol_qwen3_6_35b_dflash"
+    "ll_cnv.json",
+    "ll_ol_qwen3_6_35b.json",
+    "ll_ol_qwen3_6_35b_dflash.json"
   ]
 }
 

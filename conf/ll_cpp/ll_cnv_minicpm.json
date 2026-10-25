@@ -3,7 +3,7 @@
   "kind": "mode",
   "description": "Llama.cpp - Cnv - MiniCPM-V-4.7 35B A (dspark)",
   "include": [
-    "ll_cnv",
+    "ll_cnv.json",
     "ll_ol_minicpm_35b_a.json",
     "ll_ol_minicpm_35b_dspark.json"
   ]

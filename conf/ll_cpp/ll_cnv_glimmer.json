@@ -3,7 +3,7 @@
   "kind": "mode",
   "description": "Llama.cpp - Cnv - Muse Glimmer 30B (dflash)",
   "include": [
-    "ll_cnv",
+    "ll_cnv.json",
     "ll_ol_glimmer_30b_a.json",
     "ll_ol_glimmer_30b_dflash.json"
   ]

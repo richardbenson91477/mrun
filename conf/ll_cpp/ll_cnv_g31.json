@@ -3,8 +3,8 @@
   "kind": "mode",
   "description": "Llama.cpp - Cnv - Gemma 4 31B A",
   "include": [
-    "ll_cnv",
-    "ll_ol_gemma4_31b_a"
+    "ll_cnv.json",
+    "ll_ol_gemma4_31b_a.json"
   ]
 }
 

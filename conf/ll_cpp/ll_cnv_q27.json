@@ -3,7 +3,7 @@
   "kind": "mode",
   "description": "Llama.cpp - Cnv - Qwen 3.8 27B A (dflash)",
   "include": [
-    "ll_cnv",
+    "ll_cnv.json",
     "ll_ol_qwen3_8_27b_a",
     "ll_ol_qwen3_8_27b_dflash"
   ]
