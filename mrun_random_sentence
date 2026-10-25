@@ -1,23 +1,52 @@
 #!/bin/sh
 
-[ "$nw" ] ||\
-  nw=3
+num_words_default=3
+out_path_default="/tmp/mrun_random_sentence.out"
+
+[ "$num_words" ] ||\
+  num_words="$num_words_default"
+
+[ "$out_path" ] ||\
+  out_path="$out_path_default"
+
 
 [ "$1" = "--help" ] && {
     echo "usage: $0 [mrun extra args]"
     echo "env:"
-    echo "  nw: number of random words to generate (current: ${nw})"
+    echo "  num_words: number of random words to generate (current: ${num_words})"
+    echo "  out_path: path to save generated response (current: \"${out_path}\")"
     exit 1
     }
 
 
-random_words=$(zstdcat "$mrun_path/etc/words.zst" |
-      shuf |
-      head -n "$nw"
-      )
+generate_random_words () {
+    random_words=$(zstdcat "$mrun_path/etc/words.zst" |
+          shuf |
+          head -n "$num_words"
+          )
+    }
+
+
+generate_random_words
+
+if [ "$1" != "-y" ]; then
+    confirm="n"
+    while [ "$confirm" = "n" ]; do
+        echo -n "$(basename $0): use random words: $(echo -n ${random_words})"
+        read -p "$@? (y/n/q): " confirm
+        [ "$confirm" = "q" ] &&\
+          exit 2
+
+        generate_random_words
+        done
+
+  else
+    shift
+    fi
 
 
 mrun -m "ll_sentence_gen" -y -- \
   --var _prompt_terms="@mrun_list ${random_words}" \
+  --var _out_path="$out_path" \
   "$@"
 
