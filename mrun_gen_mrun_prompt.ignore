@@ -1,0 +1,4 @@
+^./LICENSE
+^./tests/expected
+^./mrun_gen_mrun_prompt.*
+^./etc/words.zst

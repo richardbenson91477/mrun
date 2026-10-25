@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd "$mrun_path"
+
+regarding.py $(find . -type f |
+      grep -v -x -f "${0}.ignore"
+      )
+
