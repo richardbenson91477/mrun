@@ -4,7 +4,7 @@
   "description": "Audio.cpp - Vibevoice",
   "include": "audio_cpp_vibevoice_common.json",
   "args": {
-    "--model": "{_model_path}/vibevoice_models/vibevoice-1.5b-q8_0.gguf"
+    "--model": "{_model_path}/gguf_audio_misc/vibevoice-1.5b-q8_0.gguf"
   }
 }
 

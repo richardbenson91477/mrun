@@ -1,0 +1,17 @@
+{
+  "name": "a_kokoro_common",
+  "kind": "base",
+  "description": "Audio.cpp - Kokoro (Common)",
+  "include": "audio_cpp_common.json",
+  "vars": {
+    "_text": "Speaker 1: Do we follow the melody line?\nSpeaker 2: Yes, the rhythm keeps everything fine.\nSpeaker 1: Hold that shape and make it new.\nSpeaker 2: Change the color, keep the view!",
+    "_out_path": "/tmp/kokoro_out.wav"
+  },
+  "args": {
+    "--family": "kokoro_tts",
+    "--task": "tts",
+    "--text": "{_text}",
+    "--out": "{_out_path}"
+  }
+}
+

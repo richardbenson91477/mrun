@@ -12,7 +12,7 @@
   "args": {
     "--family": "cosyvoice3",
     "--task": "clon",
-    "--model": "{_model_path}/cosyvoice3_models/cosyvoice3-q8_0.gguf",
+    "--model": "{_model_path}/gguf_audio_misc/cosyvoice3-q8_0.gguf",
     "--text": "{_text}",
     "--voice-ref": "{_in_voice_path}",
     "--reference-text": "{_in_voice_text}",

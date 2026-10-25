@@ -1,0 +1,10 @@
+{
+  "name": "a_kokoro",
+  "kind": "mode",
+  "description": "Audio.cpp - Kokoro",
+  "include": "audio_cpp_kokoro_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_audio_misc/kokoro-82m-q8_0.gguf"
+  }
+}
+
