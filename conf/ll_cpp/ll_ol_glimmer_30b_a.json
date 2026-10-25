@@ -5,7 +5,8 @@
   "description": "Llama.cpp - Overlay - Muse Glimmer 30B A",
   "include": "ll_ol_qwen_common.json",
   "args": {
-    "--model": "{_model_path}/gguf_llm/model_glimmer_30b_a"
+    "--model": "{_model_path}/gguf_llm/model_glimmer_30b_a",
+    "--flash-attn": "on"
   },
   "optional_args": {
     "--mmproj": "{_model_path}/gguf_llm/mmproj_glimmer_30b_a"
