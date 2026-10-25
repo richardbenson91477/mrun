@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-echo "=== pipeline_mi_qi2e_ltx2 (SD MOSS Image Gen -> SD Qwen Image 2 Edit -> SD LTX2 FLF2V)"
+echo "=== pipeline_mi_qi2e_ltx2 (SD MOSS Image Gen -> SD Qwen Image 2 Edit -> SD LTX2 FLF2V) ==="
 
 echo "=== step 1/3: SD MOSS Image Gen ==="
 mrun.py -m sd_moss_i -y -- \
