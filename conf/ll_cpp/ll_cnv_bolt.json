@@ -1,0 +1,11 @@
+{
+  "name": "ll_cnv_bolt",
+  "kind": "mode",
+  "description": "Llama.cpp - Cnv - NVIDIA Nemotron 3.5 Bolt E4B (dflash)",
+  "include": [
+    "ll_cnv.json",
+    "ll_ol_bolt_e4b.json",
+    "ll_ol_bolt_e4b_dflash.json"
+  ]
+}
+

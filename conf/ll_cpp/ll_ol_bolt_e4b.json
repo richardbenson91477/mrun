@@ -1,0 +1,15 @@
+{
+  "name": "ll_ol_bolt_e4b",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - NVIDIA Nemotron 3.5 Bolt E4B",
+  "include": "ll_ol_qwen_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_llm/model_bolt_e4b",
+    "--flash-attn": "on"
+  },
+  "optional_args": {
+    "--mmproj": "{_model_path}/gguf_llm/mmproj_bolt_e4b"
+  }
+}
+
