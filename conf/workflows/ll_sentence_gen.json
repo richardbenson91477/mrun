@@ -8,14 +8,16 @@
     "_prompt_terms": ["cat", "food", "mouse"],
     "_prompt_tail": "Please respond in a single line with no extra information.",
     "_model_ol": "ll_ol_qwen3_5_4b_a",
-    "_ctx_size": 1024
+    "_ctx_size": 1024,
+    "_out_path": "/dev/null"
   },
   "env": {
     "_mrun_prompt_head": "{_prompt_head}",
     "_mrun_prompt_terms": "{_prompt_terms}",
     "_mrun_prompt_tail": "{_prompt_tail}",
     "_mrun_model_ol": "{_model_ol}",
-    "_mrun_ctx_size": "{_ctx_size}"
+    "_mrun_ctx_size": "{_ctx_size}",
+    "_mrun_out_path": "{_out_path}"
   },
   "executable": "{_mrun_path}/workflows/ll_sentence_gen.sh"
 }
