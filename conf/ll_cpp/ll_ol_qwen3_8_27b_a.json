@@ -6,7 +6,8 @@
   "include": "ll_ol_qwen_common.json",
   "args": {
     "--model": "{_model_path}/gguf_llm/model_qwen3_8_27b_a",
-    "--spec-type": "draft-mtp"
+    "--spec-type": "draft-mtp",
+    "--reasoning-effort": "low"
   },
   "optional_args": {
     "--mmproj": "{_model_path}/gguf_llm/mmproj_qwen3_8_27b_a"
