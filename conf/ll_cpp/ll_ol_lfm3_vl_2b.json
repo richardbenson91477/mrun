@@ -1,0 +1,14 @@
+{
+  "name": "ll_ol_lfm3_vl_2b",
+  "kind": "overlay",
+  "overlay_for": ["ll_cnv", "ll_srv"],
+  "description": "Llama.cpp - Overlay - LFM3 VL 2B",
+  "include": "ll_common.json",
+  "args": {
+    "--model": "{_model_path}/gguf_llm/model_lfm3_vl_2b"
+  },
+  "optional_args": {
+    "--mmproj": "{_model_path}/gguf_llm/mmproj_lfm3_vl_2b"
+  }
+}
+

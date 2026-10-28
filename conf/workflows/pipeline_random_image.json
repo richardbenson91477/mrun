@@ -1,0 +1,23 @@
+{
+  "name": "pipeline_random_image",
+  "kind": "mode",
+  "description": "Pipeline: Random Sentence -> Image Gen",
+  "vars": {
+    "_mrun_path": "@mrun_env mrun_path",
+    "_prompt_file": "/tmp/pipeline_random_image_prompt",
+    "_prompt_head": "Image of ",
+    "_prompt_tail": "(cinematic quality, correct anatomy, correct limbs, photorealistic, hyper-realistic, hyper-detailed, ultra-high definition, 8K, masterpiece, sensual composition, lush cinematography, perfect framing, rich filmography, vivid colors, professional lighting.) {_}",
+    "_image_out_path": "/tmp/pipeline_random_image_out.png",
+    "_auto": "true",
+    "_image_gen_mode": "sd_moss_i"
+  },
+  "env": {
+    "conf_prompt_file": "{_prompt_file}",
+    "conf_prompt_head": "{_prompt_head}",
+    "conf_prompt_tail": "{_prompt_tail}",
+    "conf_image_out_path": "{_image_out_path}",
+    "conf_auto": "{_auto}",
+    "conf_image_gen_mode": "{_image_gen_mode}"
+  },
+  "executable": "{_mrun_path}/workflow_bin/pipeline_random_image.sh"
+}

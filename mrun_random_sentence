@@ -1,17 +1,17 @@
 #!/bin/sh
 
-num_words_default=3
-words_path_default="$mrun_path/etc/words.zst"
-out_path_default="/tmp/mrun_random_sentence.out"
+_num_words_default=3
+_words_path_default="$mrun_path/etc/words.zst"
+_out_path_default="/tmp/mrun_random_sentence.out"
 
 [ "$num_words" ] ||\
-  num_words="$num_words_default"
+  num_words="$_num_words_default"
 
 [ "$words_path" ] ||\
-  words_path="$words_path_default"
+  words_path="$_words_path_default"
 
 [ "$out_path" ] ||\
-  out_path="$out_path_default"
+  out_path="$_out_path_default"
 
 
 [ "$1" = "--help" ] && {
@@ -33,13 +33,13 @@ generate_random_words () {
 
 
 if [ "$1" != "-y" ]; then
-    confirm="n"
-    while [ "$confirm" = "n" ]; do
+    _confirm="n"
+    while [ "$_confirm" = "n" ]; do
         generate_random_words
 
         echo -n "$(basename $0): use random words: $(echo -n ${random_words})"
-        read -p "$@? (y/n/q): " confirm
-        [ "$confirm" = "q" ] &&\
+        read -p "$@? (y/n/q): " _confirm
+        [ "$_confirm" = "q" ] &&\
           exit 2
 
         done

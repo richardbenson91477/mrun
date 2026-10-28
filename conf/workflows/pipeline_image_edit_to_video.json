@@ -1,0 +1,30 @@
+{
+  "name": "pipeline_image_edit_to_video",
+  "kind": "mode",
+  "description": "Pipeline: Image Gen -> Image Edit -> FLF2V Video",
+  "vars": {
+    "_mrun_path": "@mrun_env mrun_path",
+    "_prompt_img_1": "a cartoon cat in a cartoon forest {_}",
+    "_prompt_img_2": "Add the text 'HELLO' clearly at the top center of the image {_}",
+    "_prompt_vid": "The cat lifts its front right paw and waves hello while the HELLO text expands into view. The cat then lowers its paw. {_}",
+    "_img_1_path": "/tmp/img_1.png",
+    "_img_2_path": "/tmp/img_2.png",
+    "_vid_path": "/tmp/vid.webm",
+    "_image_gen_mode": "sd_moss_i",
+    "_image_edit_mode": "sd_qi2_edit",
+    "_video_flf2v_mode": "sd_ltx2_flf2v"
+  },
+  "env": {
+    "conf_prompt_img_1": "{_prompt_img_1}",
+    "conf_prompt_img_2": "{_prompt_img_2}",
+    "conf_prompt_vid": "{_prompt_vid}",
+    "conf_img_1_path": "{_img_1_path}",
+    "conf_img_2_path": "{_img_2_path}",
+    "conf_vid_path": "{_vid_path}",
+    "conf_image_gen_mode": "{_image_gen_mode}",
+    "conf_image_edit_mode": "{_image_edit_mode}",
+    "conf_video_flf2v_mode": "{_video_flf2v_mode}"
+  },
+  "executable": "{_mrun_path}/workflow_bin/pipeline_image_edit_to_video.sh"
+}
+

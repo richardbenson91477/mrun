@@ -12,13 +12,13 @@
     "_out_path": "/dev/null"
   },
   "env": {
-    "_mrun_prompt_head": "{_prompt_head}",
-    "_mrun_prompt_terms": "{_prompt_terms}",
-    "_mrun_prompt_tail": "{_prompt_tail}",
-    "_mrun_model_ol": "{_model_ol}",
-    "_mrun_ctx_size": "{_ctx_size}",
-    "_mrun_out_path": "{_out_path}"
+    "conf_prompt_head": "{_prompt_head}",
+    "conf_prompt_terms": "{_prompt_terms}",
+    "conf_prompt_tail": "{_prompt_tail}",
+    "conf_model_ol": "{_model_ol}",
+    "conf_ctx_size": "{_ctx_size}",
+    "conf_out_path": "{_out_path}"
   },
-  "executable": "{_mrun_path}/workflows/ll_sentence_gen.sh"
+  "executable": "{_mrun_path}/workflow_bin/ll_sentence_gen.sh"
 }
 
